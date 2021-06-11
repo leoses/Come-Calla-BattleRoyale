@@ -1,10 +1,13 @@
-#include "SDLApp.h"
+/*#include "SDLApp.h"
+#include "iostream"
+#include <SDL2/SDL.h>
 
-void SDLApp::SDLApp(){
+
+SDLApp::SDLApp(){
     initSDL();
 }
 
-void SDLApp::~SDLApp(){
+SDLApp::~SDLApp(){
     //Destruimos render y window
 	SDL_DestroyRenderer(renderer_);
 	SDL_DestroyWindow(window_);
@@ -26,6 +29,6 @@ void SDLApp::initSDL(){
 
 	renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
 	if (window_ == nullptr || renderer_ == nullptr) {
-		throw exception("Game window or renderer was null");
+		std::cout<< "Game window or renderer was null \n";
 	}
-}
+}*/
