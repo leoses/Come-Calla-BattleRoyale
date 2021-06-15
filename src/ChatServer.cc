@@ -2,9 +2,8 @@
 
 int main(int argc, char **argv)
 {
-    std::cout << "creacion del game server\n";
     GameServer es(argv[1], argv[2]);
-    std::cout << "Se ha creado correctamente\n";
+    std::cout << "Creacion del game server completada\n";
 
     es.do_messages();
 

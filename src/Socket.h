@@ -112,8 +112,6 @@ public:
     friend bool operator== (const Socket &s1, const Socket &s2);
     friend bool operator!= (const Socket &s1, const Socket &s2);
 
-protected:
-
     /**
      *  Descriptor del socket
      */

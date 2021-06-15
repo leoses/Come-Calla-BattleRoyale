@@ -1,11 +1,8 @@
 #include "Jugador.h"
 #include "Message.h"
 
-Jugador::Jugador(const char * s, const char * p, const char * n):socket(s, p),nick(n)
+Jugador::Jugador(const char * s, const char * p, const char * n):socket(s,p),nick(n)
 {
-    //bindeamos el socket
-    //socket.bind();
-
     //conectarse al servidor mediante login
     login();
 
@@ -14,9 +11,7 @@ Jugador::Jugador(const char * s, const char * p, const char * n):socket(s, p),ni
 }
 
 Jugador::~Jugador(){
-    //Desconectarse del servidor
-
-    //Cerrar la pantalla
+    //Borrar el singleton del SDLApp
     delete playerApp;
 }
 
@@ -26,7 +21,6 @@ void Jugador::update(){
 
 void Jugador::login(){
     LoginMessage logMsg = LoginMessage(nick);
-    std::cout << "Antes de enviar el mensaje\n";
     if(socket.send(logMsg, socket) == -1){
         std::cout << "Error al enviar el mensaje de login\n";
     }

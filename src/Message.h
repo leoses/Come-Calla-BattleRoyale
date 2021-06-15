@@ -32,6 +32,7 @@ class LoginMessage : public Message{
 private:
     std::string nick;
 public:
+    LoginMessage();
     LoginMessage(std::string nick_);
     virtual ~LoginMessage();
     virtual void to_bin() override;

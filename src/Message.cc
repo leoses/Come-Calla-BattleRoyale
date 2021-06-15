@@ -17,6 +17,10 @@ MessageType Message::getMessageType(){
     return type;
 }
 
+LoginMessage::LoginMessage():Message(MessageType::LOGIN){
+    
+}
+
 LoginMessage::LoginMessage(std::string nick_):Message(MessageType::LOGIN), nick(nick_){
     messageSize = sizeof(MessageType) + sizeof(char) * 8;
 }
@@ -36,6 +40,8 @@ void LoginMessage::to_bin(){
     //Copiamos tipo de mensaje a partir de la direccion que marca temp
     memcpy(temp, &type, sizeof(MessageType));
 
+    temp += sizeof(MessageType);
+
     //Copiamos el nombre a partir de la direccion que marca temp
     memcpy(temp, nick.c_str(), sizeof(char) * 8);
 
@@ -52,10 +58,10 @@ int LoginMessage::from_bin(char * bobj){
 
     //Copiamos tipo
     memcpy(&type, temp, sizeof(MessageType));
-
+    temp += sizeof(MessageType);
     //Se puede hacer porque es un string (\0)
     nick = temp;
-    temp += sizeof(char) * 8;
+    
 
     return 0;
 }

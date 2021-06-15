@@ -7,7 +7,11 @@ class GameServer
 public:
     GameServer(const char * s, const char * p): socket(s, p)
     {
-        socket.bind();
+        std::cout << "Bind del gameServer\n";
+        if(socket.bind() == -1){
+            std::cout << "Bindeo Incorrecto\n";
+        }
+        else std::cout << "Bindeo Correcto\n";
     };
 
     /**
