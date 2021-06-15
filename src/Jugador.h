@@ -1,5 +1,5 @@
-class SDLApp;
-#include "Socket.h";
+#include "Socket.h"
+#include "SDLApp.h"
 
 class Jugador{
 private:
@@ -22,4 +22,4 @@ public:
     void input_thread();
     void net_thread();
 
-}
+};

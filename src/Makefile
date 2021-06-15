@@ -1,14 +1,17 @@
-DEPS = Socket.h Chat.h SDLApp.h
-OBJ = Socket.o Chat.o SDLApp.o
+DEPS = Socket.h Message.h GameServer.h SDLApp.h Jugador.h ChatClient.h ChatServer.h
+OBJ = Socket.o Message.o GameServer.o SDLApp.o Jugador.o ChatClient.o ChatServer.o
+
+SERVER = Socket.o Message.o GameServer.o
+CLIENT = Socket.o Message.o SDLApp.o Jugador.o
 #LINKER_FLAGS specifies the libraries we're linking against
 LIBS =  -lpthread 
 LIBSSDL=-lSDL2 -lSDL2_image -lSDL2_ttf
 %.o: %.cc $(DEPS)
 	$(CC) -g -c -o $@ $< $(CFLAGS)
 all: cs cc
-cs: $(OBJ) ChatServer.o
+cs: $(SERVER) ChatServer.o
 	g++ -o $@ $^ $(CFLAGS) $(LIBS)
-cc: $(OBJ) ChatClient.o
+cc: $(CLIENT) ChatClient.o
 	g++ -o $@ $^ $(CFLAGS) `pkg-config --cflags --libs sdl2` $(LIBS) $(LIBSSDL) 
 .PHONY: clean
 clean:

@@ -1,6 +1,5 @@
 #include "Message.h"
 #include <memory.h>
-#include <string>
 
 Message::Message(MessageType type_): type(type_){
 
@@ -57,4 +56,10 @@ int LoginMessage::from_bin(char * bobj){
     //Se puede hacer porque es un string (\0)
     nick = temp;
     temp += sizeof(char) * 8;
+
+    return 0;
+}
+
+std::string LoginMessage::getNick(){
+    return nick;
 }

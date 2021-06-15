@@ -3,24 +3,30 @@
 
 void GameServer::do_messages(){
     //Abrir conexion servidor
+    std::cout << "Comienzo del do messages\n";
     socket.bind();
+    std::cout << "Bindeado correcto \n";
 
     while (true)
     {
         Message* cm;
         Socket *s;
 
+        std::cout << "Esperando a recibir mensaje\n";
         //Esperamos recibir un mensaje de cualquier socket
         socket.recv(*cm, s);
 
+        std::cout << "HEMOS RECIBIDO UN MENSAJE\n";
 
         //Recibir Mensajes en y en función del tipo de mensaje
         switch (cm->getMessageType())
         {
         case MessageType::LOGIN:
         {
+            std::cout << "Mensaje de tipo login\n";
+            LoginMessage* log = static_cast<LoginMessage*>(cm);
             /* code */
-            std::cout << "Jugador conectado: " << cm->nick << "\n";
+            std::cout << "Jugador conectado: " << log->getNick() << "\n";
             //Lo añadimos a la lista de clientes convirtiendo el socket en un unique_ptr y usando move
             clients.push_back(std::move(std::make_unique<Socket>(*s)));
 

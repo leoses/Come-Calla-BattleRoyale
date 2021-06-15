@@ -1,4 +1,5 @@
 #include "Serializable.h"
+#include  <string>
 
 enum class MessageType
 {
@@ -35,5 +36,6 @@ public:
     virtual ~LoginMessage();
     virtual void to_bin() override;
     virtual int from_bin(char * bobj) override;
+    std::string getNick();
 
 };

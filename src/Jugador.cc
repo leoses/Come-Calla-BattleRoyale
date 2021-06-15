@@ -1,9 +1,11 @@
 #include "Jugador.h"
-#include "SDLApp.h"
 #include "Message.h"
 
 Jugador::Jugador(const char * s, const char * p, const char * n):socket(s, p),nick(n)
 {
+    //bindeamos el socket
+    //socket.bind();
+
     //conectarse al servidor mediante login
     login();
 
@@ -23,8 +25,11 @@ void Jugador::update(){
 }
 
 void Jugador::login(){
-
-    socket.send(LoginMessage(), socket);
+    LoginMessage logMsg = LoginMessage(nick);
+    std::cout << "Antes de enviar el mensaje\n";
+    if(socket.send(logMsg, socket) == -1){
+        std::cout << "Error al enviar el mensaje de login\n";
+    }
 }
 
 void Jugador::logout(){
@@ -67,3 +72,4 @@ void Jugador::net_thread()
         std::cout << em.nick << ": " << em.message << "\n";
         */
     }
+}
