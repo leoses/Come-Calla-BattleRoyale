@@ -2,21 +2,23 @@
 #include "Message.h"
 
 void GameServer::do_messages(){
-    //Abrir conexion servidor
-    std::cout << "Comienzo del do messages\n";
-    socket.bind();
-    std::cout << "Bindeado correcto \n";
 
+    std::cout << "Bind del gameServer\n";
+    if(socket.bind() == -1){
+        std::cout << "Bindeo Incorrecto\n";
+    }
+    else std::cout << "Bindeo Correcto\n";
+    
     while (true)
     {
         Message cm;
         Socket *s;
 
-        std::cout << "Esperando a recibir mensaje\n";
+        //std::cout << "Esperando a recibir mensaje\n";
         //Esperamos recibir un mensaje de cualquier socket
-        socket.recv(cm, s);
-
-        std::cout << "HEMOS RECIBIDO UN MENSAJE\n";
+        if(socket.recv(cm, s)==-1){
+            std::cout << "Error al recibir el mensaje\n";
+        }else std::cout << "HEMOS RECIBIDO UN MENSAJE\n";
 
         //Recibir Mensajes en y en función del tipo de mensaje
         switch (cm.getMessageType())
@@ -30,6 +32,24 @@ void GameServer::do_messages(){
             //Lo añadimos a la lista de clientes convirtiendo el socket en un unique_ptr y usando move
             clients.push_back(std::move(std::make_unique<Socket>(*s)));
             players[cm.getNick()]= PlayerInfo();
+
+            //Primero mandarle al player que se acaba de conectar su posicion y su tam
+
+            socket.send(, s);
+
+            //Avisar al resto de jugadores que se ha conectado un nuevo jugador
+            //Reenviar el mensaje a todos los clientes menos a si mismo
+            for (auto it = clients.begin(); it != clients.end(); it++)
+			{
+				if (**it !=  *s)
+				{
+                    //Crear mensaje de jugador nuevo conectado
+                    //enviarlo a todos
+					//socket.send(cm, **it);
+				}
+			}
+
+            break;
 
             break;
         }

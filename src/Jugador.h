@@ -10,7 +10,7 @@ private:
     SDLTexture* texture = nullptr;
     Vector2D pos;
     SDL_Rect dimensions;
-
+    int tam;
 
 public:
     /**

@@ -2,7 +2,7 @@
 #include "Serializable.h"
 #include  <string>
 #include <SDL2/SDL.h>
-
+#include "PlayerInfo.h"
 class Jugador;
 
 
@@ -31,7 +31,11 @@ public:
     size_t getMessageSize();
     MessageType getMessageType();
     std::string getNick();
+    PlayerInfo getPlayerInfo()const;
+    
     void setNick(std::string newNick);
+    void setPlayerInfo(const PlayerInfo& info);
+
 
 protected:
     size_t messageSize = sizeof(MessageType);
@@ -39,6 +43,7 @@ protected:
     SDL_Rect dimensions;
     std::string nick;
     Jugador* player;
+    PlayerInfo playerInfo;
     
 
 };
