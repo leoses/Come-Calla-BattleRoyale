@@ -11,6 +11,7 @@ private:
     Vector2D pos;
     SDL_Rect dimensions;
 
+
 public:
     /**
      * @param s dirección del servidor
@@ -25,5 +26,7 @@ public:
     void logout();
     void input_thread();
     void net_thread();
+    std::string getNick(){return nick;}
+
 
 };

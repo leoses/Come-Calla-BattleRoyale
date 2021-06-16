@@ -4,7 +4,7 @@
 Message::Message(): type(MessageType::UNDEFINED){
 
 }
-Message::Message(MessageType type_): type(type_){
+Message::Message(MessageType type_, Jugador* player_): type(type_)player(player_){
 
 }
 
@@ -21,31 +21,67 @@ MessageType Message::getMessageType(){
 }
 
 void Message::to_bin(){
-    alloc_data(messageSize);
+    switch(type){
+        case MessageType::LOGIN:
+        {
+            //calculamos el tamaño del mensaje
+            
+            messageSize = sizeof(MessageType) + sizeof(char)*12;
+            //reservamos la memoria
+            alloc_data(messageSize);
+            memset(_data, 0, messageSize);
 
-    memset(_data, 0, messageSize);
+            //Serializar los campos type
+             char *temp = _data;
 
-    //Serializar los campos type
-    char *temp = _data;
+            //Copiamos tipo de mensaje a partir de la direccion que marca temp
+            //almacenamos primero el tipo de mensaje
+             memcpy(temp, &type, sizeof(MessageType));
 
-    //Copiamos tipo de mensaje a partir de la direccion que marca temp
-    memcpy(temp, &type, sizeof(MessageType));
+             temp += sizeof(MessageType);
 
-    temp += sizeof(MessageType);
+             //Copiamos el nombre a partir de la direccion que marca temp
+             //despues almacenamos el resto de la informacion
+             memcpy(temp, nick.c_str(), sizeof(char) * 12);
 
-    //Copiamos el nombre a partir de la direccion que marca temp
-    memcpy(temp, nick.c_str(), sizeof(char) * 8);
+            break;
+        }
 
-    temp +=sizeof(char) * 8;
+             case MessageType::LOGOUT:
+        {
+            //calculamos el tamaño del mensaje
+            
+            messageSize = sizeof(MessageType) + sizeof(char)*12;
+            //reservamos la memoria
+            alloc_data(messageSize);
+            memset(_data, 0, messageSize);
 
-    memcpy(temp, &dimensions, sizeof(SDL_Rect)); 
+            //Serializar los campos type
+             char *temp = _data;
 
+            //Copiamos tipo de mensaje a partir de la direccion que marca temp
+            //almacenamos primero el tipo de mensaje
+             memcpy(temp, &type, sizeof(MessageType));
+
+             temp += sizeof(MessageType);
+
+             //Copiamos el nombre a partir de la direccion que marca temp
+             //despues almacenamos el resto de la informacion
+             memcpy(temp, nick.c_str(), sizeof(char) * 12);
+
+            break;
+        }
+    
+    }
+   
 }
 
 int Message::from_bin(char * bobj){
 
+//reservamos memoria para coger el tipo de mensaje
+    messageSize= sizeof(MessageType)
     alloc_data(messageSize);
-
+//coger el tipo de mensaje
     memcpy(static_cast<void *>(_data), bobj, messageSize);
 
     //Reconstruir la clase usando el buffer _data
@@ -53,13 +89,41 @@ int Message::from_bin(char * bobj){
 
     //Copiamos tipo
     memcpy(&type, temp, sizeof(MessageType));
-    temp += sizeof(MessageType);
     
-    //Se puede hacer porque es un string (\0)
-    nick = temp;
-    temp +=sizeof(char) * 8;
+
+    switch(type){
+        case MessageType::LOGIN
+        {
+            messageSize = sizeof(MessageType) + sizeof(char)*12;
+            //reservamos la memoria
+            alloc_data(messageSize);
+            memcpy(static_cast<void *>(_data), bobj, messageSize);
+             //Reconstruir la clase usando el buffer _data
+            char *temp = _data;
+            temp += sizeof(MessageType);
+             //Se puede hacer porque es un string (\0)
+            nick = temp;
+            break;
+        }
+
+          case MessageType::LOGOUT
+        {
+            messageSize = sizeof(MessageType) + sizeof(char)*12;
+            //reservamos la memoria
+            alloc_data(messageSize);
+            memcpy(static_cast<void *>(_data), bobj, messageSize);
+             //Reconstruir la clase usando el buffer _data
+            char *temp = _data;
+            temp += sizeof(MessageType);
+             //Se puede hacer porque es un string (\0)
+            nick = temp;
+            break;
+        }
+    }
     
-    memcpy(&dimensions, temp, sizeof(SDL_Rect)); 
+  
+    
+   
     return 0;
 }
 

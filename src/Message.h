@@ -1,23 +1,26 @@
 #include "Serializable.h"
 #include  <string>
 #include <SDL2/SDL.h>
+#include "Jugador.h"
 
 
 enum class MessageType
 {
     LOGIN   = 0,
-    PLAYERPOS = 1,
+    PLAYERINFO = 1,
     PICKUPEAT = 2,
-    PLAYERTAM = 3,
-    LOGOUT  = 4,
-    UNDEFINED = 5
+    NEWPICKUP = 3,
+    PICKUPDESTROY = 4
+    LOGOUT  = 5,
+    UNDEFINED = 6
 };
 
 class Message: public Serializable{
 public:
     
     Message();
-    Message(MessageType type_);
+    Message(MessageType type_ Jugador* player_);
+    //Message(MessageType type_ PickUp obj);
     virtual ~Message();
 
     virtual void to_bin();
@@ -29,9 +32,11 @@ public:
     void setNick(std::string newNick);
 
 protected:
-    static const size_t messageSize = sizeof(MessageType) + sizeof(char) * 8 + sizeof(SDL_Rect);
+    size_t messageSize = sizeof(MessageType);
     MessageType type;
     SDL_Rect dimensions;
     std::string nick;
+    Jugador* player;
+    
 
 };
