@@ -29,6 +29,7 @@ void GameServer::do_messages(){
             std::cout << "Jugador conectado: " << cm.getNick() << "\n";
             //Lo añadimos a la lista de clientes convirtiendo el socket en un unique_ptr y usando move
             clients.push_back(std::move(std::make_unique<Socket>(*s)));
+            players[cm.getNick()]= PlayerInfo();
 
             break;
         }
@@ -53,15 +54,12 @@ void GameServer::do_messages(){
             break;
             
         }
-        case MessageType::PLAYERPOS:
+        case MessageType::PLAYERINFO:
         {
            
             break;
         }
-        case MessageType::PLAYERTAM:
-        {
-            break;
-        }
+    
         case MessageType::PICKUPEAT:
         {
             break;

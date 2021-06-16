@@ -1,7 +1,22 @@
 #include "Socket.h"
 #include <vector>
+#include "Vector2D.h"
+#include <SDL2/SDL.h>
 #include <memory>
+#include <map>
 
+struct PlayerInfo{
+Vector2D pos;
+int tam;
+SDL_Rect dimensions;
+PlayerInfo(){
+    pos = Vector2D(0,0);
+    int tam = 100;
+    dimensions = SDL_Rect({pos.getX(), pos.getY(),tam,tam});
+}
+
+
+};
 class GameServer
 {
 public:
@@ -12,6 +27,7 @@ public:
             std::cout << "Bindeo Incorrecto\n";
         }
         else std::cout << "Bindeo Correcto\n";
+       
     };
 
     /**
@@ -26,6 +42,7 @@ private:
      *  su socket
      */
     std::vector<std::unique_ptr<Socket>> clients;
+    std::map<std::string,PlayerInfo > players;
 
     /**
      * Socket del servidor

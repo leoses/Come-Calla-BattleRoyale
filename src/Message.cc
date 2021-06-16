@@ -1,10 +1,11 @@
 #include "Message.h"
 #include <memory.h>
+#include "Jugador.h"
 
 Message::Message(): type(MessageType::UNDEFINED){
 
 }
-Message::Message(MessageType type_, Jugador* player_): type(type_)player(player_){
+Message::Message(MessageType type_, Jugador* player_): type(type_),player(player_){
 
 }
 
@@ -42,7 +43,7 @@ void Message::to_bin(){
 
              //Copiamos el nombre a partir de la direccion que marca temp
              //despues almacenamos el resto de la informacion
-             memcpy(temp, nick.c_str(), sizeof(char) * 12);
+             memcpy(temp, player->getNick().c_str(), sizeof(char) * 12);
 
             break;
         }
@@ -67,7 +68,7 @@ void Message::to_bin(){
 
              //Copiamos el nombre a partir de la direccion que marca temp
              //despues almacenamos el resto de la informacion
-             memcpy(temp, nick.c_str(), sizeof(char) * 12);
+             memcpy(temp, player->getNick().c_str(), sizeof(char) * 12);
 
             break;
         }
@@ -79,7 +80,7 @@ void Message::to_bin(){
 int Message::from_bin(char * bobj){
 
 //reservamos memoria para coger el tipo de mensaje
-    messageSize= sizeof(MessageType)
+    messageSize= sizeof(MessageType);
     alloc_data(messageSize);
 //coger el tipo de mensaje
     memcpy(static_cast<void *>(_data), bobj, messageSize);
@@ -92,7 +93,7 @@ int Message::from_bin(char * bobj){
     
 
     switch(type){
-        case MessageType::LOGIN
+        case MessageType::LOGIN:
         {
             messageSize = sizeof(MessageType) + sizeof(char)*12;
             //reservamos la memoria
@@ -106,7 +107,7 @@ int Message::from_bin(char * bobj){
             break;
         }
 
-          case MessageType::LOGOUT
+          case MessageType::LOGOUT:
         {
             messageSize = sizeof(MessageType) + sizeof(char)*12;
             //reservamos la memoria

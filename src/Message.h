@@ -1,7 +1,9 @@
+#pragma once
 #include "Serializable.h"
 #include  <string>
 #include <SDL2/SDL.h>
-#include "Jugador.h"
+
+class Jugador;
 
 
 enum class MessageType
@@ -10,7 +12,7 @@ enum class MessageType
     PLAYERINFO = 1,
     PICKUPEAT = 2,
     NEWPICKUP = 3,
-    PICKUPDESTROY = 4
+    PICKUPDESTROY = 4,
     LOGOUT  = 5,
     UNDEFINED = 6
 };
@@ -19,7 +21,7 @@ class Message: public Serializable{
 public:
     
     Message();
-    Message(MessageType type_ Jugador* player_);
+    Message(MessageType type_ ,Jugador* player_);
     //Message(MessageType type_ PickUp obj);
     virtual ~Message();
 
