@@ -1,9 +1,9 @@
-#include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 
 #include <string>
 using namespace std;
 
-class Texture {
+class SDLTexture {
 private:
 	SDL_Texture* texture_;
 	SDL_Renderer* renderer_;
@@ -11,12 +11,12 @@ private:
 	int height_;
 
 public:
-	Texture();
-	Texture(SDL_Renderer* renderer, const string& fileName);
-	Texture(SDL_Renderer* renderer, const string& text, const Font* font, const SDL_Color& color);
-	Texture(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dest, SDL_Rect* destRect);
+	SDLTexture();
+	SDLTexture(SDL_Renderer* renderer, const string& fileName);
+	//SDLTexture(SDL_Renderer* renderer, const string& text, const Font* font, const SDL_Color& color);
+	SDLTexture(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dest, SDL_Rect* destRect);
 
-	virtual ~Texture();
+	virtual ~SDLTexture();
 
 	inline int getWidth() {
 		return width_;
@@ -37,7 +37,7 @@ public:
 	//bool loadFromText(SDL_Renderer* renderer, const string& text, const Font* font, const SDL_Color& color = { 0, 0, 0, 255 });
 
 	//Carga texturas a partir de dos surface para hacer un blit
-	//bool loadFromSurface(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dest, SDL_Rect* destRect);
+	bool loadFromSurface(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dest, SDL_Rect* destRect);
 
 	//Renderiza en posiciones directamente
 	void render(int x, int y) const;

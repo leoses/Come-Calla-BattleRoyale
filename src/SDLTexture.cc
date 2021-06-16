@@ -1,30 +1,30 @@
-#include "Texture.h"
-#include <SDL_image.h>
+#include "SDLTexture.h"
+#include <SDL2/SDL_image.h>
 #include <iostream>
 using namespace std;
 
-Texture::Texture() : texture_(nullptr), renderer_(nullptr), width_(0), height_(0) {
+SDLTexture::SDLTexture() : texture_(nullptr), renderer_(nullptr), width_(0), height_(0) {
 }
 
-Texture::Texture(SDL_Renderer* renderer, const string& fileName) : texture_(nullptr), width_(0), height_(0) {
+SDLTexture::SDLTexture(SDL_Renderer* renderer, const string& fileName) : texture_(nullptr), width_(0), height_(0) {
 	loadFromImg(renderer, fileName);
 }
-
+/*
 Texture::Texture(SDL_Renderer* renderer, const string& text, const Font* font, const SDL_Color& color) :
 	texture_(nullptr), width_(0), height_(0) {
 	loadFromText(renderer, text, font, color);
-}
+}*/
 
-Texture::Texture(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dest, SDL_Rect* destRect) :
+SDLTexture::SDLTexture(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dest, SDL_Rect* destRect) :
 	texture_(nullptr), width_(0), height_(0) {
 	loadFromSurface(renderer, src, srcRect, dest, destRect);
 }
 
-Texture::~Texture() {
+SDLTexture::~SDLTexture() {
 	close();
 }
 
-void Texture::close() {
+void SDLTexture::close() {
 	if (texture_ != nullptr) {
 		SDL_DestroyTexture(texture_); // destruye la textura actual
 		texture_ = nullptr;
@@ -33,7 +33,7 @@ void Texture::close() {
 	}
 }
 
-bool Texture::loadFromImg(SDL_Renderer* renderer, const string& fileName) {
+bool SDLTexture::loadFromImg(SDL_Renderer* renderer, const string& fileName) {
 	SDL_Surface* surface = IMG_Load(fileName.c_str());
 	if (surface != nullptr) {
 		close(); // destruye la textura actual para sustituirla
@@ -69,8 +69,8 @@ bool Texture::loadFromText(SDL_Renderer* renderer, const string& text, const Fon
 	renderer_ = renderer;
 	return texture_ != nullptr;
 }
-
-bool Texture::loadFromSurface(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dest, SDL_Rect* destRect)
+*/
+bool SDLTexture::loadFromSurface(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect* srcRect, SDL_Surface* dest, SDL_Rect* destRect)
 {
 	if (SDL_BlitSurface(src, srcRect, dest, destRect) == 0) {
 		if (dest != nullptr) {
@@ -89,8 +89,8 @@ bool Texture::loadFromSurface(SDL_Renderer* renderer, SDL_Surface* src, SDL_Rect
 	renderer_ = renderer;
 	return texture_ != nullptr;
 }
-*/
-void Texture::render(int x, int y) const {
+
+void SDLTexture::render(int x, int y) const {
 	SDL_Rect dest;
 	dest.x = x;
 	dest.y = y;
@@ -99,25 +99,25 @@ void Texture::render(int x, int y) const {
 	render(dest);
 }
 
-void Texture::render(const SDL_Rect& dest, const SDL_Rect& frame) const {
+void SDLTexture::render(const SDL_Rect& dest, const SDL_Rect& frame) const {
 	if (texture_) {
 		SDL_RenderCopy(renderer_, texture_, &frame, &dest);
 	}
 }
 
-void Texture::render(const SDL_Rect& dest) const {
+void SDLTexture::render(const SDL_Rect& dest) const {
 	SDL_Rect frame = { 0, 0, width_, height_ };
 	render(dest, frame);
 }
 
 
-void Texture::render(const SDL_Rect& dest, double angle, const SDL_Rect& frame) const {
+void SDLTexture::render(const SDL_Rect& dest, double angle, const SDL_Rect& frame) const {
 	if (texture_) {
 		SDL_RenderCopyEx(renderer_, texture_, &frame, &dest, angle, nullptr, SDL_FLIP_NONE);
 	}
 }
 
-void Texture::render(const SDL_Rect& dest, double angle) const {
+void SDLTexture::render(const SDL_Rect& dest, double angle) const {
 	SDL_Rect frame = { 0, 0, width_, height_ };
 	render(dest, angle, frame);
 }

@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include "TextureManager.h"
 
 class SDLApp
 {
@@ -7,40 +8,29 @@ private:
 	SDL_Window* window_ = nullptr;
 	SDL_Renderer* renderer_ = nullptr;
 
-    void initSDL(){
+	///<summary>Manager que gestiona las texturas </summary>
+	TextureManager* textureManager_ = nullptr;
 
-		int winX, winY; // PosiciOn de la ventana
-		winX = winY = SDL_WINDOWPOS_CENTERED;
-		// InicializaciOn del sistema, ventana y renderer
-		SDL_Init(SDL_INIT_EVERYTHING);
-		window_ = SDL_CreateWindow("Dopplebanger", winX, winY, winWidth_,
-		winHeight_, SDL_WINDOW_SHOWN);
-		std::cout<< "ventana creada \n";
+    void initSDL();
+	///<summary>Metodo que inicializa los recursos de la app</summary>
+	void initResources();
 
-		renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
-		std::cout<< "renderer creada \n";
-		if (window_ == nullptr || renderer_ == nullptr) {
-			std::cout<< "Game window or renderer was null \n";
-		}
 
-	};
+	SDLApp();
+
+	static SDLApp* instance;
 
 public:
-    SDLApp(){
-		   initSDL();
-	};
-    ~SDLApp(){
+  
+  	static SDLApp* GetInstance();
 
-		//Destruimos render y window
-		SDL_DestroyRenderer(renderer_);
-		SDL_DestroyWindow(window_);
+	SDLApp(SDLApp &other) = delete;
+    void operator=(const SDLApp &) = delete;
+    
+    ~SDLApp();
 
-		renderer_ = nullptr;
-		window_ = nullptr;
-
-		//Cerramos SDL
-		SDL_Quit();
-	};
+	SDL_Window* getWindow();
+	SDL_Renderer* getRenderer();
 
     ///<summary>Constantes con las dimensiones de la ventana </summary>
 	static const int winWidth_ = 800;

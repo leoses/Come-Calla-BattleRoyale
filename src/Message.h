@@ -1,5 +1,7 @@
 #include "Serializable.h"
 #include  <string>
+#include <SDL2/SDL.h>
+
 
 enum class MessageType
 {
@@ -7,36 +9,29 @@ enum class MessageType
     PLAYERPOS = 1,
     PICKUPEAT = 2,
     PLAYERTAM = 3,
-    LOGOUT  = 4
+    LOGOUT  = 4,
+    UNDEFINED = 5
 };
 
 class Message: public Serializable{
 public:
     
+    Message();
     Message(MessageType type_);
     virtual ~Message();
 
-    virtual void to_bin() = 0;
-    virtual int from_bin(char * bobj) = 0;
+    virtual void to_bin();
+    virtual int from_bin(char * bobj);
 
     size_t getMessageSize();
     MessageType getMessageType();
+    std::string getNick();
+    void setNick(std::string newNick);
 
 protected:
-    size_t messageSize = 0;
+    static const size_t messageSize = sizeof(MessageType) + sizeof(char) * 8 + sizeof(SDL_Rect);
     MessageType type;
-
-};
-
-class LoginMessage : public Message{
-private:
+    SDL_Rect dimensions;
     std::string nick;
-public:
-    LoginMessage();
-    LoginMessage(std::string nick_);
-    virtual ~LoginMessage();
-    virtual void to_bin() override;
-    virtual int from_bin(char * bobj) override;
-    std::string getNick();
 
 };

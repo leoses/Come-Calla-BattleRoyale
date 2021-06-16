@@ -6,13 +6,18 @@ Jugador::Jugador(const char * s, const char * p, const char * n):socket(s,p),nic
     //conectarse al servidor mediante login
     login();
 
-    //Abrir ventana
-    playerApp = new SDLApp();
+    //Guardas referencia a la aplicacion
+    playerApp = SDLApp::GetInstance();
+
+    //inicializar textura
+    texture =  new SDLTexture();
 }
 
 Jugador::~Jugador(){
     //Borrar el singleton del SDLApp
     delete playerApp;
+    //Borrar textura del jugador
+    delete texture;
 }
 
 void Jugador::update(){
@@ -20,7 +25,8 @@ void Jugador::update(){
 }
 
 void Jugador::login(){
-    LoginMessage logMsg = LoginMessage(nick);
+    Message logMsg = Message(MessageType::LOGIN);
+    logMsg.setNick(nick);
     if(socket.send(logMsg, socket) == -1){
         std::cout << "Error al enviar el mensaje de login\n";
     }

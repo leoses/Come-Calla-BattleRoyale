@@ -1,6 +1,9 @@
 #include "Message.h"
 #include <memory.h>
 
+Message::Message(): type(MessageType::UNDEFINED){
+
+}
 Message::Message(MessageType type_): type(type_){
 
 }
@@ -17,19 +20,7 @@ MessageType Message::getMessageType(){
     return type;
 }
 
-LoginMessage::LoginMessage():Message(MessageType::LOGIN){
-    
-}
-
-LoginMessage::LoginMessage(std::string nick_):Message(MessageType::LOGIN), nick(nick_){
-    messageSize = sizeof(MessageType) + sizeof(char) * 8;
-}
-
-LoginMessage::~LoginMessage(){
-
-}
-
-void LoginMessage::to_bin(){
+void Message::to_bin(){
     alloc_data(messageSize);
 
     memset(_data, 0, messageSize);
@@ -45,9 +36,13 @@ void LoginMessage::to_bin(){
     //Copiamos el nombre a partir de la direccion que marca temp
     memcpy(temp, nick.c_str(), sizeof(char) * 8);
 
+    temp +=sizeof(char) * 8;
+
+    memcpy(temp, &dimensions, sizeof(SDL_Rect)); 
+
 }
 
-int LoginMessage::from_bin(char * bobj){
+int Message::from_bin(char * bobj){
 
     alloc_data(messageSize);
 
@@ -59,13 +54,19 @@ int LoginMessage::from_bin(char * bobj){
     //Copiamos tipo
     memcpy(&type, temp, sizeof(MessageType));
     temp += sizeof(MessageType);
+    
     //Se puede hacer porque es un string (\0)
     nick = temp;
+    temp +=sizeof(char) * 8;
     
-
+    memcpy(&dimensions, temp, sizeof(SDL_Rect)); 
     return 0;
 }
 
-std::string LoginMessage::getNick(){
+std::string Message::getNick(){
     return nick;
+}
+
+void Message::setNick(std::string newNick){
+    nick = newNick;
 }

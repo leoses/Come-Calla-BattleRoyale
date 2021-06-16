@@ -9,7 +9,7 @@ void GameServer::do_messages(){
 
     while (true)
     {
-        LoginMessage cm;
+        Message cm;
         Socket *s;
 
         std::cout << "Esperando a recibir mensaje\n";

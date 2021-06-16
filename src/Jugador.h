@@ -1,11 +1,15 @@
 #include "Socket.h"
 #include "SDLApp.h"
+#include "Vector2D.h"
 
 class Jugador{
 private:
     SDLApp* playerApp;
     Socket socket;
     std::string nick;
+    SDLTexture* texture = nullptr;
+    Vector2D pos;
+    SDL_Rect dimensions;
 
 public:
     /**
