@@ -1,74 +1,82 @@
 #include "GameServer.h"
 #include "Message.h"
 #include <memory>
+#include <ctime>
+#include <cstdlib>
 
-void GameServer::do_messages(){
+GameServer::GameServer(const char *s, const char *p) : socket(s, p)
+{
+    //Inicializamos seed para numeros aleatorios
+    srand(std::time(0));
+}
+
+void GameServer::do_messages()
+{
 
     std::cout << "Bind del gameServer\n";
-    if(socket.bind() == -1){
+    if (socket.bind() == -1)
+    {
         std::cout << "Bindeo Incorrecto\n";
     }
-    else std::cout << "Bindeo Correcto\n";
-    
+    else
+        std::cout << "Bindeo Correcto\n";
+
     while (true)
     {
         Message cm;
-        Socket* s = nullptr;
+        Socket *s = nullptr;
 
         std::cout << "Esperando a recibir mensaje\n";
         //Esperamos recibir un mensaje de cualquier socket
-        if(socket.recv(cm, s)==-1){
+        if (socket.recv(cm, s) == -1)
+        {
             std::cout << "Error al recibir el mensaje\n";
-        }else std::cout << "HEMOS RECIBIDO UN MENSAJE\n";
+        }
+        else
+            std::cout << "HEMOS RECIBIDO UN MENSAJE\n";
 
         //Recibir Mensajes en y en función del tipo de mensaje
         switch (cm.getMessageType())
         {
         case MessageType::LOGIN:
         {
-            std::cout << "Mensaje de tipo login\n";
 
-            std::cout << "Jugador conectado: " << cm.getNick() << "\n";
             //Lo añadimos a la lista de clientes convirtiendo el socket en un unique_ptr y usando move
-            std::cout << "Descriptor del socket:"<<s->sd << "\n";
             clients.push_back(std::move(std::make_unique<Socket>(*s)));
-            std::cout << "Antes de asignar el player info nuevo\n";
-            players[cm.getNick()]= PlayerInfo();
 
-            //Primero mandarle al player que se acaba de conectar su posicion y su tam
+            //Informacion del jugador
+            PlayerInfo n;
+            n.tam = 100;
+            n.pos = Vector2D(0, 0);
 
-            //socket.send(, s);
+            //Asignamos
+            players[cm.getNick()] = n;
 
+            //Mandarle al player que se acaba de conectar su posicion y su tam
             //Avisar al resto de jugadores que se ha conectado un nuevo jugador
-            //Reenviar el mensaje a todos los clientes menos a si mismo
-            std::cout << "Antes de crear el mensaje de newPlayer\n";
+            //Reenviar el mensaje a todos los clientes
             Message newPlayerConnected = Message();
             newPlayerConnected.setMsgType(MessageType::NEWPLAYER);
             newPlayerConnected.setNick(cm.getNick());
             newPlayerConnected.setPlayerInfo(players[cm.getNick()]);
-            
-            std::cout << "ANtes del for\n";
-            int i = 0;
+
+            //Avisar a todos los jugadores conectados que ha entrado uno nuevo
             for (auto it = clients.begin(); it != clients.end(); it++)
-			{
-                std::cout << "Iteracion n: " << i <<"\n";
-                i++;
+            {
+                //enviarlo a todos
+                socket.send(newPlayerConnected, (**it));
+            }
 
-                std::cout <<"Descripcion del iterador: "<< (**it).sd << "\n";
-				if ((**it) !=  (*s))
-				{
-                    std::cout <<"Tenemos que mandar mensaje\n";
-                    //Crear mensaje de jugador nuevo conectado
-                    //enviarlo a todos
-					socket.send(newPlayerConnected, (**it));
-
-                    std::cout << "Mensaje de nuevo jugador conectado enviado\n";
-				}
-                std::cout << "Vuelta" << i <<" terminada\n";
-			}
-
-            std::cout << "Despues del for\n";
-
+            //Avisar al que ha entrado de donde estan el resto
+            for (auto it = players.begin(); it != players.end(); ++it)
+            {
+                if ((*it).first != cm.getNick())
+                {
+                    newPlayerConnected.setNick((*it).first);
+                    newPlayerConnected.setPlayerInfo((*it).second);
+                    socket.send(newPlayerConnected, *s);
+                }
+            }
             break;
         }
         case MessageType::LOGOUT:
@@ -90,14 +98,13 @@ void GameServer::do_messages(){
             //    delete delSock;                    //Borramos el socket
             //}
             break;
-            
         }
         case MessageType::PLAYERINFO:
         {
-           
+
             break;
         }
-    
+
         case MessageType::PICKUPEAT:
         {
             break;

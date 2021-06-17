@@ -29,6 +29,10 @@ public:
     void initPlayer();
 
     Socket* getPlayerSocket();
+    void setPosition(const Vector2D& newPos);
+    void setTam(int newTam);
+
+    void setTexture(SDLTexture* newTexture);
 
 
 };

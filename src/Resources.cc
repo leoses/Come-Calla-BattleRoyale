@@ -4,7 +4,9 @@
 vector<Resources::ImageInfo> Resources::imageRoutes {
 
 	//Botones
-	//{ MenuButton, "../Sources/assets/botones/botonMenu.png" },
+	{ Escenario, "./Assets/Escenario.png" },
+	{ Jugador1, "./Assets/Jugador01.png" },
+	{ Jugador2, "./Assets/Jugador02.png" },
 	
 };
 /*

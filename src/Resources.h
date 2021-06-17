@@ -11,7 +11,9 @@ class Resources
 public:
 	///<summary>Enum para las distintas imagenes del juego</summary>
 	enum TextureId : int {
-
+		Escenario,
+		Jugador1,
+		Jugador2
 	};
 
 	enum MusicChannels : int {

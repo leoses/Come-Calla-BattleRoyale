@@ -13,11 +13,11 @@ int main(int argc, char **argv)
     //Mandamos mensaje de login y creamos la ventana de SDL
     game.initGame();
     //thread para escuchar al input
-    game.input_thread();
+    //game.input_thread();
 
     //Para que se quede aquí hasta que queramos
     while(true){
-        //std::cout << "aqui iria el update del jugador por ejemplo\n";
+        game.render();
     }
 
     //ec.input_thread();

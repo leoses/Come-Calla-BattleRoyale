@@ -32,6 +32,7 @@ public:
 
 	SDL_Window* getWindow();
 	SDL_Renderer* getRenderer();
+	TextureManager* getTextureManager();
 
     ///<summary>Constantes con las dimensiones de la ventana </summary>
 	static const int winWidth_ = 800;

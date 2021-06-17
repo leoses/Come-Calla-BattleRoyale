@@ -8,9 +8,7 @@
 class GameServer
 {
 public:
-    GameServer(const char * s, const char * p): socket(s, p)
-    {  
-    };
+    GameServer(const char * s, const char * p);
 
     /**
      *  Thread principal del servidor recive mensajes en el socket y

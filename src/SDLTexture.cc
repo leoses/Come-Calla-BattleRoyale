@@ -103,6 +103,7 @@ void SDLTexture::render(const SDL_Rect& dest, const SDL_Rect& frame) const {
 	if (texture_) {
 		SDL_RenderCopy(renderer_, texture_, &frame, &dest);
 	}
+	else std::cout << "NO hay textura\n";
 }
 
 void SDLTexture::render(const SDL_Rect& dest) const {

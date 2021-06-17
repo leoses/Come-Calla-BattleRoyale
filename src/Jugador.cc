@@ -8,8 +8,6 @@ Jugador::Jugador(const char *s, const char *p, const char *n) : socket(s, p), ni
 
 Jugador::~Jugador()
 {
-    //Borrar textura del jugador
-    delete texture;
 }
 
 void Jugador::update()
@@ -34,12 +32,21 @@ void Jugador::initPlayer()
 {
     //conectarse al servidor mediante login
     login();
-
-    //inicializar textura
-    texture = new SDLTexture();
 }
 
 Socket* Jugador::getPlayerSocket(){
     return &socket;
     
+}
+
+void Jugador::setPosition(const Vector2D& newPos){
+    pos = newPos;
+}
+
+void Jugador::setTam(int newTam){
+    tam = newTam;
+}
+
+void Jugador::setTexture(SDLTexture* newTexture){
+    texture =newTexture;
 }

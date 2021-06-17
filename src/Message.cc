@@ -48,7 +48,6 @@ void Message::to_bin()
 
     case MessageType::NEWPLAYER:
     {
-        std::cout << "BIN DE NEW PLAYER\n";
         serializePlayerInfo();
         break;
     }
@@ -147,44 +146,40 @@ void Message::serializeTypeNick()
 
 void Message::serializePlayerInfo()
 {
-    std::cout << "Serialize player info\n";
-    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
-    std::cout << "a\n";
+    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(double)*2 + sizeof(int);
     //reservamos la memoria
     alloc_data(messageSize);
-    std::cout << "a\n";
 
     memset(_data, 0, messageSize);
-    std::cout << "a\n";
 
 
     //Serializar los campos type
     char *temp = _data;
-    std::cout << "a\n";
 
 
     //Copiamos tipo de mensaje a partir de la direccion que marca temp
     //almacenamos primero el tipo de mensaje
     memcpy(temp, &type, sizeof(MessageType));
-    std::cout << "a\n";
 
 
     temp += sizeof(MessageType);
-    std::cout << "a\n";
 
 
     //Copiamos el nombre a partir de la direccion que marca temp
     //despues almacenamos el resto de la informacion
     memcpy(temp, nick.c_str(), sizeof(char) * 12);
-    std::cout << "a\n";
 
     temp += sizeof(char) * 12;
-    std::cout << "a\n";
 
+    float x = playerInfo.pos.getX();
+    memcpy(temp, &x, sizeof(double));
+    temp += sizeof(double);
 
-    std::cout << "Antes de serializar PLAYERINFO\n";
-    memcpy(temp, &playerInfo, sizeof(PlayerInfo));
-    std::cout << "Despues de serializar PLAYERINFO\n";
+    float y = playerInfo.pos.getY();
+    memcpy(temp, &y, sizeof(double));
+    temp += sizeof(double);
+
+    memcpy(temp, &playerInfo.tam, sizeof(int));
 }
 
 void Message::constructTypeNick(char *bobj)
@@ -202,7 +197,7 @@ void Message::constructTypeNick(char *bobj)
 
 void Message::constructPlayerInfo(char *bobj)
 {
-    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
+    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(double)*2 + sizeof(int);
     //reservamos la memoria
     alloc_data(messageSize);
     memcpy(static_cast<void *>(_data), bobj, messageSize);
@@ -213,8 +208,19 @@ void Message::constructPlayerInfo(char *bobj)
     nick = temp;
 
     temp += sizeof(char) * 12;
-    std::cout << "Antes de construir PLayerInfo\n";
-    memcpy(&playerInfo, temp, sizeof(PlayerInfo));
-    std::cout << "Después de construir PLayerInfo\n";
+
+    float x, y;
+    memcpy(&x, temp, sizeof(double));
+    temp += sizeof(double);
+    memcpy(&y, temp, sizeof(double));
+    temp += sizeof(double);
+    int tam;
+    memcpy(&tam, temp, sizeof(int));
+
+    playerInfo.tam = tam;
+
+    playerInfo.pos.setX(x);
+    playerInfo.pos.setY(y);
+
 
 }

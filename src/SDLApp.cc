@@ -32,11 +32,13 @@ void SDLApp::initSDL(){
 	SDL_Init(SDL_INIT_EVERYTHING);
 	window_ = SDL_CreateWindow("Come&Calla", winX, winY, winWidth_,
 		winHeight_, SDL_WINDOW_SHOWN);
+	  
 
 	renderer_ = SDL_CreateRenderer(window_, -1, SDL_RENDERER_ACCELERATED);
-	if (window_ == nullptr || renderer_ == nullptr) {
+	if (window_ == NULL || renderer_ == NULL) {
 		std::cout<< "Game window or renderer was null \n";
 	}
+
 }
 
 SDLApp* SDLApp::GetInstance()
@@ -53,6 +55,10 @@ SDL_Window* SDLApp::getWindow(){
 
 SDL_Renderer* SDLApp::getRenderer(){
 	return renderer_;
+}
+
+TextureManager* SDLApp::getTextureManager(){
+	return textureManager_;
 }
 
 void SDLApp::initResources(){

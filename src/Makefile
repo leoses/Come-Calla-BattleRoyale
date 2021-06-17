@@ -1,4 +1,4 @@
-DEPS = Vector2D.h  Resources.h SDLTexture.h TextureManager.h Socket.h Message.h GameServer.h SDLApp.h Jugador.h Game.h GameObject.h ChatClient.h ChatServer.h
+DEPS = Vector2D.h  PlayerInfo.h Resources.h SDLTexture.h TextureManager.h Socket.h Message.h GameServer.h SDLApp.h Jugador.h Game.h GameObject.h ChatClient.h ChatServer.h
 
 SERVER = Vector2D.o  Resources.o Socket.o Message.o GameServer.o
 CLIENT = Vector2D.o  Resources.o SDLTexture.o TextureManager.o Socket.o Message.o SDLApp.o Jugador.o Game.o GameObject.o
