@@ -46,8 +46,8 @@ void GameServer::do_messages()
 
             //Informacion del jugador
             PlayerInfo n;
-            n.tam = 100;
-            n.pos = Vector2D(0, 0);
+            n.tam = 25;
+            n.pos = Vector2D(rand() % (800), rand() % (600));
 
             //Asignamos
             players[cm.getNick()] = n;

@@ -10,7 +10,6 @@ private:
     std::string nick;
     SDLTexture* texture = nullptr;
     Vector2D pos;
-    SDL_Rect dimensions;
     int tam;
 
 public:
@@ -29,9 +28,11 @@ public:
     void initPlayer();
 
     Socket* getPlayerSocket();
+    SDLTexture* getPlayerTexture();
+    Vector2D getPlayerPos();
+    int getPlayerTam();
     void setPosition(const Vector2D& newPos);
     void setTam(int newTam);
-
     void setTexture(SDLTexture* newTexture);
 
 

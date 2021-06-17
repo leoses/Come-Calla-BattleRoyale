@@ -50,3 +50,15 @@ void Jugador::setTam(int newTam){
 void Jugador::setTexture(SDLTexture* newTexture){
     texture =newTexture;
 }
+
+SDLTexture* Jugador::getPlayerTexture(){
+    return texture;
+}
+
+Vector2D Jugador::getPlayerPos(){
+    return pos;
+}
+
+int Jugador::getPlayerTam(){
+    return tam;
+}
