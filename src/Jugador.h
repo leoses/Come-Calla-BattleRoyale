@@ -1,10 +1,11 @@
+#pragma once
 #include "Socket.h"
-#include "SDLApp.h"
 #include "Vector2D.h"
-
+#include <SDL2/SDL.h>
+class SDLTexture;
+ 
 class Jugador{
 private:
-    SDLApp* playerApp;
     Socket socket;
     std::string nick;
     SDLTexture* texture = nullptr;
@@ -24,10 +25,10 @@ public:
     void update();
     void login();
     void logout();
-    void input_thread();
-    void net_thread();
     std::string getNick(){return nick;}
     void initPlayer();
+
+    Socket* getPlayerSocket();
 
 
 };
