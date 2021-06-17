@@ -14,10 +14,27 @@ enum class MessageType
     NEWPICKUP = 3,
     PICKUPDESTROY = 4,
     LOGOUT  = 5,
-    UNDEFINED = 6
+    NEWPLAYER =6,
+    UNDEFINED = 7
 };
 
 class Message: public Serializable{
+protected:
+    size_t messageSize = sizeof(MessageType);
+    MessageType type;
+    SDL_Rect dimensions;
+    std::string nick;
+    Jugador* player;
+    PlayerInfo playerInfo;
+
+    //Metodos para la serializacion de nuestros mensajes
+    void serializeTypeNick();
+    void serializePlayerInfo();
+
+    //Metodos para la construccion de los mensajes recibidos
+    void constructTypeNick(char *bobj);
+    void constructPlayerInfo(char *bobj);
+
 public:
     
     Message();
@@ -31,19 +48,14 @@ public:
     size_t getMessageSize();
     MessageType getMessageType();
     std::string getNick();
-    PlayerInfo getPlayerInfo()const;
+    PlayerInfo getPlayerInfo()const{
+        return playerInfo;
+    }
     
     void setNick(std::string newNick);
-    void setPlayerInfo(const PlayerInfo& info);
-
-
-protected:
-    size_t messageSize = sizeof(MessageType);
-    MessageType type;
-    SDL_Rect dimensions;
-    std::string nick;
-    Jugador* player;
-    PlayerInfo playerInfo;
-    
+    void setPlayerInfo(const PlayerInfo& info){
+        playerInfo = info;
+    }
+    void setMsgType(MessageType type);
 
 };

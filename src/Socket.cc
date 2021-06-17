@@ -60,7 +60,7 @@ int Socket::recv(Serializable &obj, Socket * &sock)
         return -1;
     }
 
-    if ( sock != 0 )
+    if ( sock == nullptr )
     {
         sock = new Socket(&sa, sa_len);
     }
@@ -72,13 +72,16 @@ int Socket::recv(Serializable &obj, Socket * &sock)
 
 int Socket::send(Serializable& obj, const Socket& sock)
 {
+    std::cout << "Antes de serializar el objeto\n";
     //Serializar el objeto
     obj.to_bin();
+
+    std::cout << "Despues de serializar el objeto\n";
 
     //Enviar el objeto binario a sock usando el socket sd
     ssize_t bytes = sendto(sock.sd,obj.data(),obj.size(),0,&sock.sa, sock.sa_len);
 
-    std:: cout << bytes << "\n";
+    std::cout << "PASAMOS DEL SEND TO. NUm bytes: "<< bytes<<"\n";
 
     if ( bytes <= 0 )
     {

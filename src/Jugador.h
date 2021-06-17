@@ -27,6 +27,7 @@ public:
     void input_thread();
     void net_thread();
     std::string getNick(){return nick;}
+    void initPlayer();
 
 
 };

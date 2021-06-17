@@ -1,8 +1,8 @@
 #include "Socket.h"
 #include <vector>
-#include <memory>
 #include <map>
 #include "PlayerInfo.h"
+#include <memory>
 
 
 class GameServer
@@ -10,7 +10,6 @@ class GameServer
 public:
     GameServer(const char * s, const char * p): socket(s, p)
     {  
-        std::cout << "Constructora de GAMESERVER\n";
     };
 
     /**

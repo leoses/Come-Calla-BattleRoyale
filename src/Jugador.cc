@@ -1,39 +1,34 @@
 #include "Jugador.h"
 #include "Message.h"
 
-Jugador::Jugador(const char * s, const char * p, const char * n):socket(s,p),nick(n)
+Jugador::Jugador(const char *s, const char *p, const char *n) : socket(s, p), nick(n)
 {
-    //conectarse al servidor mediante login
-    login();
-
-    //Guardas referencia a la aplicacion
-    playerApp = SDLApp::GetInstance();
-
-    //inicializar textura
-    texture =  new SDLTexture();
 }
 
-Jugador::~Jugador(){
+Jugador::~Jugador()
+{
     //Borrar el singleton del SDLApp
     delete playerApp;
     //Borrar textura del jugador
     delete texture;
 }
 
-void Jugador::update(){
-
+void Jugador::update()
+{
 }
 
-void Jugador::login(){
+void Jugador::login()
+{
     //Mandamos el mensaje de LOGIN
     Message logMsg = Message(MessageType::LOGIN, this);
-    if(socket.send(logMsg, socket) == -1){
+    if (socket.send(logMsg, socket) == -1)
+    {
         std::cout << "Error al enviar el mensaje de login\n";
     }
 }
 
-void Jugador::logout(){
-
+void Jugador::logout()
+{
 }
 
 void Jugador::input_thread()
@@ -62,14 +57,25 @@ void Jugador::net_thread()
 {
     while (true)
     {
-        /*
+
         //Recibir Mensajes de red
-        ChatMessage em;
+        Message em;
 
         socket.recv(em);
 
         //Mostrar en pantalla el mensaje de la forma "nick: mensaje"
-        std::cout << em.nick << ": " << em.message << "\n";
-        */
+        std::cout << "Recibido mensaje de: " << em.getNick() << " de tipo " << (int)em.getMessageType() << "\n";
     }
+}
+
+void Jugador::initPlayer()
+{
+    //conectarse al servidor mediante login
+    login();
+
+    //Guardas referencia a la aplicacion
+    playerApp = SDLApp::GetInstance();
+
+    //inicializar textura
+    texture = new SDLTexture();
 }

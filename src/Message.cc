@@ -7,6 +7,7 @@ Message::Message() : type(MessageType::UNDEFINED)
 }
 Message::Message(MessageType type_, Jugador *player_) : type(type_), player(player_)
 {
+    nick = player->getNick();
 }
 
 Message::~Message()
@@ -29,77 +30,26 @@ void Message::to_bin()
     {
     case MessageType::LOGIN:
     {
-        //calculamos el tamaño del mensaje
-
-        messageSize = sizeof(MessageType) + sizeof(char) * 12;
-        //reservamos la memoria
-        alloc_data(messageSize);
-        memset(_data, 0, messageSize);
-
-        //Serializar los campos type
-        char *temp = _data;
-
-        //Copiamos tipo de mensaje a partir de la direccion que marca temp
-        //almacenamos primero el tipo de mensaje
-        memcpy(temp, &type, sizeof(MessageType));
-
-        temp += sizeof(MessageType);
-
-        //Copiamos el nombre a partir de la direccion que marca temp
-        //despues almacenamos el resto de la informacion
-        memcpy(temp, player->getNick().c_str(), sizeof(char) * 12);
-
+        serializeTypeNick();
         break;
     }
 
     case MessageType::LOGOUT:
     {
-        //calculamos el tamaño del mensaje
-
-        messageSize = sizeof(MessageType) + sizeof(char) * 12;
-        //reservamos la memoria
-        alloc_data(messageSize);
-        memset(_data, 0, messageSize);
-
-        //Serializar los campos type
-        char *temp = _data;
-
-        //Copiamos tipo de mensaje a partir de la direccion que marca temp
-        //almacenamos primero el tipo de mensaje
-        memcpy(temp, &type, sizeof(MessageType));
-
-        temp += sizeof(MessageType);
-
-        //Copiamos el nombre a partir de la direccion que marca temp
-        //despues almacenamos el resto de la informacion
-        memcpy(temp, player->getNick().c_str(), sizeof(char) * 12);
-
+        serializeTypeNick();
         break;
     }
 
     case MessageType::PLAYERINFO:
     {
-        messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
-        //reservamos la memoria
-        alloc_data(messageSize);
-        memset(_data, 0, messageSize);
+        serializePlayerInfo();
+         break;
+    }
 
-        //Serializar los campos type
-        char *temp = _data;
-
-        //Copiamos tipo de mensaje a partir de la direccion que marca temp
-        //almacenamos primero el tipo de mensaje
-        memcpy(temp, &type, sizeof(MessageType));
-
-        temp += sizeof(MessageType);
-
-        //Copiamos el nombre a partir de la direccion que marca temp
-        //despues almacenamos el resto de la informacion
-        memcpy(temp, player->getNick().c_str(), sizeof(char) * 12);
-
-        temp += sizeof(char) * 12;
-        memcpy(temp,&playerInfo,sizeof(PlayerInfo));
-
+    case MessageType::NEWPLAYER:
+    {
+        std::cout << "BIN DE NEW PLAYER\n";
+        serializePlayerInfo();
         break;
     }
     }
@@ -125,50 +75,29 @@ int Message::from_bin(char *bobj)
     case MessageType::LOGIN:
     {
         std::cout << "LOGIN\n";
-        messageSize = sizeof(MessageType) + sizeof(char) * 12;
-        //reservamos la memoria
-        alloc_data(messageSize);
-        memcpy(static_cast<void *>(_data), bobj, messageSize);
-        //Reconstruir la clase usando el buffer _data
-        char *temp = _data;
-        temp += sizeof(MessageType);
-        //Se puede hacer porque es un string (\0)
-        nick = temp;
+        constructTypeNick(bobj);
         break;
     }
 
     case MessageType::LOGOUT:
     {
         std::cout << "LOGOUT\n";
-        messageSize = sizeof(MessageType) + sizeof(char) * 12;
-        //reservamos la memoria
-        alloc_data(messageSize);
-        memcpy(static_cast<void *>(_data), bobj, messageSize);
-        //Reconstruir la clase usando el buffer _data
-        char *temp = _data;
-        temp += sizeof(MessageType);
-        //Se puede hacer porque es un string (\0)
-        nick = temp;
+        constructTypeNick(bobj);
         break;
     }
 
     case MessageType::PLAYERINFO:
     {
-        messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
-        //reservamos la memoria
-        alloc_data(messageSize);
-        memcpy(static_cast<void *>(_data), bobj, messageSize);
-        //Reconstruir la clase usando el buffer _data
-        char *temp = _data;
-        temp += sizeof(MessageType);
-        //Se puede hacer porque es un string (\0)
-        nick = temp;
-
-        temp +=sizeof(char)*12;
-        memcpy(&playerInfo, temp, sizeof(PlayerInfo);
+        constructPlayerInfo(bobj);
         break;
     }
-       
+
+    case MessageType::NEWPLAYER:
+    {
+        std::cout << "NEWPLAYER\n";
+        constructPlayerInfo(bobj);
+        break;
+    }
 
     default:
         std::cout << "Ni LOG ni LOGOUT\n";
@@ -188,10 +117,104 @@ void Message::setNick(std::string newNick)
     nick = newNick;
 }
 
-void setPlayerInfo(const PlayerInfo& info){
-    playerInfo = info;
+void Message::setMsgType(MessageType type_)
+{
+    type = type_;
 }
 
-PlayerInfo getPlayerInfo()const{
-    return playerInfo;
+void Message::serializeTypeNick()
+{
+    //calculamos el tamaño del mensaje
+
+    messageSize = sizeof(MessageType) + sizeof(char) * 12;
+    //reservamos la memoria
+    alloc_data(messageSize);
+    memset(_data, 0, messageSize);
+
+    //Serializar los campos type
+    char *temp = _data;
+
+    //Copiamos tipo de mensaje a partir de la direccion que marca temp
+    //almacenamos primero el tipo de mensaje
+    memcpy(temp, &type, sizeof(MessageType));
+
+    temp += sizeof(MessageType);
+
+    //Copiamos el nombre a partir de la direccion que marca temp
+    //despues almacenamos el resto de la informacion
+    memcpy(temp, nick.c_str(), sizeof(char) * 12);
+}
+
+void Message::serializePlayerInfo()
+{
+    std::cout << "Serialize player info\n";
+    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
+    std::cout << "a\n";
+    //reservamos la memoria
+    alloc_data(messageSize);
+    std::cout << "a\n";
+
+    memset(_data, 0, messageSize);
+    std::cout << "a\n";
+
+
+    //Serializar los campos type
+    char *temp = _data;
+    std::cout << "a\n";
+
+
+    //Copiamos tipo de mensaje a partir de la direccion que marca temp
+    //almacenamos primero el tipo de mensaje
+    memcpy(temp, &type, sizeof(MessageType));
+    std::cout << "a\n";
+
+
+    temp += sizeof(MessageType);
+    std::cout << "a\n";
+
+
+    //Copiamos el nombre a partir de la direccion que marca temp
+    //despues almacenamos el resto de la informacion
+    memcpy(temp, nick.c_str(), sizeof(char) * 12);
+    std::cout << "a\n";
+
+    temp += sizeof(char) * 12;
+    std::cout << "a\n";
+
+
+    std::cout << "Antes de serializar PLAYERINFO\n";
+    memcpy(temp, &playerInfo, sizeof(PlayerInfo));
+    std::cout << "Despues de serializar PLAYERINFO\n";
+}
+
+void Message::constructTypeNick(char *bobj)
+{
+    messageSize = sizeof(MessageType) + sizeof(char) * 12;
+    //reservamos la memoria
+    alloc_data(messageSize);
+    memcpy(static_cast<void *>(_data), bobj, messageSize);
+    //Reconstruir la clase usando el buffer _data
+    char *temp = _data;
+    temp += sizeof(MessageType);
+    //Se puede hacer porque es un string (\0)
+    nick = temp;
+}
+
+void Message::constructPlayerInfo(char *bobj)
+{
+    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
+    //reservamos la memoria
+    alloc_data(messageSize);
+    memcpy(static_cast<void *>(_data), bobj, messageSize);
+    //Reconstruir la clase usando el buffer _data
+    char *temp = _data;
+    temp += sizeof(MessageType);
+    //Se puede hacer porque es un string (\0)
+    nick = temp;
+
+    temp += sizeof(char) * 12;
+    std::cout << "Antes de construir PLayerInfo\n";
+    memcpy(&playerInfo, temp, sizeof(PlayerInfo));
+    std::cout << "Después de construir PLayerInfo\n";
+
 }

@@ -1,5 +1,6 @@
 #include "GameServer.h"
 #include "Message.h"
+#include <memory>
 
 void GameServer::do_messages(){
 
@@ -12,9 +13,9 @@ void GameServer::do_messages(){
     while (true)
     {
         Message cm;
-        Socket *s;
+        Socket* s = nullptr;
 
-        //std::cout << "Esperando a recibir mensaje\n";
+        std::cout << "Esperando a recibir mensaje\n";
         //Esperamos recibir un mensaje de cualquier socket
         if(socket.recv(cm, s)==-1){
             std::cout << "Error al recibir el mensaje\n";
@@ -26,30 +27,47 @@ void GameServer::do_messages(){
         case MessageType::LOGIN:
         {
             std::cout << "Mensaje de tipo login\n";
-            //LoginMessage* log = static_cast<LoginMessage*>(cm);
-            /* code */
+
             std::cout << "Jugador conectado: " << cm.getNick() << "\n";
             //Lo añadimos a la lista de clientes convirtiendo el socket en un unique_ptr y usando move
+            std::cout << "Descriptor del socket:"<<s->sd << "\n";
             clients.push_back(std::move(std::make_unique<Socket>(*s)));
+            std::cout << "Antes de asignar el player info nuevo\n";
             players[cm.getNick()]= PlayerInfo();
 
             //Primero mandarle al player que se acaba de conectar su posicion y su tam
 
-            socket.send(, s);
+            //socket.send(, s);
 
             //Avisar al resto de jugadores que se ha conectado un nuevo jugador
             //Reenviar el mensaje a todos los clientes menos a si mismo
+            std::cout << "Antes de crear el mensaje de newPlayer\n";
+            Message newPlayerConnected = Message();
+            newPlayerConnected.setMsgType(MessageType::NEWPLAYER);
+            newPlayerConnected.setNick(cm.getNick());
+            newPlayerConnected.setPlayerInfo(players[cm.getNick()]);
+            
+            std::cout << "ANtes del for\n";
+            int i = 0;
             for (auto it = clients.begin(); it != clients.end(); it++)
 			{
-				if (**it !=  *s)
+                std::cout << "Iteracion n: " << i <<"\n";
+                i++;
+
+                std::cout <<"Descripcion del iterador: "<< (**it).sd << "\n";
+				if ((**it) !=  (*s))
 				{
+                    std::cout <<"Tenemos que mandar mensaje\n";
                     //Crear mensaje de jugador nuevo conectado
                     //enviarlo a todos
-					//socket.send(cm, **it);
+					socket.send(newPlayerConnected, (**it));
+
+                    std::cout << "Mensaje de nuevo jugador conectado enviado\n";
 				}
+                std::cout << "Vuelta" << i <<" terminada\n";
 			}
 
-            break;
+            std::cout << "Despues del for\n";
 
             break;
         }

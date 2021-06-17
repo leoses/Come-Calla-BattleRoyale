@@ -1,6 +1,7 @@
 #pragma once
 #include "Vector2D.h"
 #include <SDL2/SDL.h>
+#include <string>
 
 struct PlayerInfo{
     Vector2D pos;
