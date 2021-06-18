@@ -24,7 +24,7 @@ private:
      *  Lista de clientes conectados al servidor de Chat, representados por
      *  su socket
      */
-    std::vector<std::unique_ptr<Socket>> clients;
+    std::map<std::string,std::unique_ptr<Socket>> clients;
     std::map<std::string,ObjectInfo > players;
     std::map<std::string,ObjectInfo> objects;
     const float TimeTocreate = 2000;
