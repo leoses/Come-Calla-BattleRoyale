@@ -89,9 +89,9 @@ void GameServer::do_messages()
 
             break;
         }
+
         case MessageType::LOGOUT:
         {
-            std::cout << "recivido logout\n";
             /*
             /* code */
             auto it = clients.begin();
@@ -110,6 +110,7 @@ void GameServer::do_messages()
             }
             break;
         }
+
         case MessageType::PLAYERINFO:
         {
             //Actualizamos la posición en la que se encuentra dicho jugador en la memoria del servidor
@@ -135,6 +136,7 @@ void GameServer::do_messages()
             std::cerr << "UNKOWNK MESSAGE RECIEVED\n";
             break;
         }
+
     }
 }
 
@@ -169,6 +171,7 @@ void GameServer::checkCollisions()
             }
         }
     }
+
     for (auto it = players.begin(); it != players.end(); ++it)
     {
         for (auto it2 = objects.begin(); it2 != objects.end(); ++it2)
@@ -178,23 +181,20 @@ void GameServer::checkCollisions()
             a = {(int)ap.pos.getX(), (int)ap.pos.getY(), ap.tam, ap.tam};
             b = {(int)bp.pos.getX(), (int)bp.pos.getY(), bp.tam, bp.tam};
 
-            //Si se solapan y el tamaño entre los dos es distinto
-            //significa que uno muere
-            if (SDL_HasIntersection(&a, &b) )
+            //Si se solapan y el tamano de l objeto es menor que el del jugador nos lo comemos
+            if (SDL_HasIntersection(&a, &b) && ap.tam > bp.tam)
             {
-                 std::cout << "colision objeto\n";
-                //nos comemos el objeto
-                if (bp.tam > ap.tam)
-                {
-                     std::cout << "objeto comido\n";
-                    objectsToErase.push_back(it2);
-                    //mandamos el mensaje
-                    Message m = Message();
-                    m.setMsgType(MessageType::PICKUPEAT);
-                    m.setNick((*it2).first);
-                    m.setObjectInfo(bp);
-                    socket.send(m, *(clients[m.getNick()].get()));
-                }
+                //Lo metemos en una lista para borrarlo posteriormente
+                objectsToErase.push_back(it2);
+
+                //Creamos el mensaje de comerse el objeto
+                Message m = Message();
+                m.setMsgType(MessageType::PICKUPEAT);
+                m.setNick((*it2).first);
+                m.setObjectInfo(bp);
+
+                //Lo enviamos exclusivamente al objeto que lo ha comido
+                socket.send(m, *(clients[(*it).first].get()));
             }
         }
     }
@@ -213,23 +213,21 @@ void GameServer::checkCollisions()
             socket.send(cm, (*((*i).second.get())));
         }
 
-
         players.erase((*player).first);
     }
+
     for (auto object : objectsToErase)
     {
-        std::cout << "objeto destruido\n";
         Message cm;
         cm.setMsgType(MessageType::PICKUPDESTROY);
         cm.setObjectInfo((*object).second);
         cm.setNick((*object).first);
-        std::cout << "Creado mensaje de objeto desaparecido\n";
+        
         //Avisamos a todos los clientes que un jugador va a ser borrado
         for (auto i = clients.begin(); i != clients.end(); ++i)
         {
             socket.send(cm, (*((*i).second.get())));
         }
-        std::cout << "ENVIADO A TODOS LOS JUGADORES\n";
 
         objects.erase((*object).first);
     }
@@ -239,7 +237,7 @@ void GameServer::createObjects()
 {
     if (SDL_GetTicks() - initTime > TimeTocreate)
     {
-        if (numObjects < MAXOBJECTS)
+        if (objects.size() < MAXOBJECTS)
         {
 
             //creo el objeto
@@ -249,19 +247,19 @@ void GameServer::createObjects()
             std::string num = std::to_string(numObjects);
             num.resize(12);
             objects[num] = obj;
+
+            std::cout << "NUmero de objetos: " << objects.size();
             numObjects++;
             //mandar mensaje de objeto nuevo
             Message cm;
             cm.setMsgType(MessageType::NEWPICKUP);
             cm.setObjectInfo((obj));
             cm.setNick((num));
-            std::cout << "Creado objeto\n";
             //Avisamos a todos los clientes que un objeto ha sido creado
             for (auto i = clients.begin(); i != clients.end(); ++i)
             {
                 socket.send(cm, (*((*i).second.get())));
             }
-            std::cout << "ENVIADO OBJETO A TODOS LOS JUGADORES\n";
         }
 
         initTime = SDL_GetTicks();

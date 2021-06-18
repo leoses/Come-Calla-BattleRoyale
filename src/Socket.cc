@@ -43,6 +43,7 @@ Socket::Socket(const char * address, const char * port):sd(-1)
 
 Socket::Socket(struct sockaddr * _sa, socklen_t _sa_len) : sd(-1), sa(*_sa),sa_len(_sa_len){
 	sd = socket(sa.sa_family,SOCK_DGRAM,0);
+    std::cout << "Constructora de Socket\n";
 	bind();
 };
 
@@ -72,11 +73,14 @@ int Socket::recv(Serializable &obj, Socket * &sock)
 
 int Socket::send(Serializable& obj, const Socket& sock)
 {
+    std::cout << "ANtes de serializar\n";
     //Serializar el objeto
     obj.to_bin();
+    std::cout << "Despues de serializar\n";
 
     //Enviar el objeto binario a sock usando el socket sd
     ssize_t bytes = sendto(sock.sd,obj.data(),obj.size(),0,&sock.sa, sock.sa_len);
+    std::cout << "ENVIADO\n";
 
     if ( bytes <= 0 )
     {
