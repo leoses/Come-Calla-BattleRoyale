@@ -3,6 +3,7 @@
 #include <map>
 #include "PlayerInfo.h"
 #include <memory>
+#include <mutex>
 
 
 class GameServer
@@ -29,4 +30,5 @@ private:
      * Socket del servidor
      */
     Socket socket;
+
 };

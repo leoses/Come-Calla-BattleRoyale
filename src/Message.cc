@@ -46,12 +46,18 @@ void Message::to_bin()
     case MessageType::PLAYERINFO:
     {
         serializePlayerInfo();
-         break;
+        break;
     }
 
     case MessageType::NEWPLAYER:
     {
         serializePlayerInfo();
+        break;
+    }
+
+    case MessageType::PLAYERDEAD:
+    {
+        serializeTypeNick();
         break;
     }
     }
@@ -98,6 +104,12 @@ int Message::from_bin(char *bobj)
     {
         std::cout << "NEWPLAYER\n";
         constructPlayerInfo(bobj);
+        break;
+    }
+    case MessageType::PLAYERDEAD:
+    {
+        std::cout << "PLAYERDEAD\n";
+        constructTypeNick(bobj);
         break;
     }
 

@@ -11,18 +11,7 @@ SDLApp::SDLApp(){
 }
 
 SDLApp::~SDLApp(){
-	//Destruimos textureManager
-	delete textureManager_;
-
-    //Destruimos render y window
-	SDL_DestroyRenderer(renderer_);
-	SDL_DestroyWindow(window_);
-
-	renderer_ = nullptr;
-	window_ = nullptr;
-
-	//Cerramos SDL
-	SDL_Quit();
+	destroyWindow();
 }
 
 void SDLApp::initSDL(){
@@ -71,4 +60,19 @@ void SDLApp::initResources(){
 	for (auto& image : Resources::imageRoutes) {
 		textureManager_->loadFromImg(image.textureId, renderer_, image.filename);
 	}
+}
+
+void SDLApp::destroyWindow(){
+	//Destruimos textureManager
+	delete textureManager_;
+
+    //Destruimos render y window
+	SDL_DestroyRenderer(renderer_);
+	SDL_DestroyWindow(window_);
+
+	renderer_ = nullptr;
+	window_ = nullptr;
+
+	//Cerramos SDL
+	SDL_Quit();
 }

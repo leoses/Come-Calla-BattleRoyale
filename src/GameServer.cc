@@ -34,8 +34,6 @@ void GameServer::do_messages()
         {
             std::cout << "Error al recibir el mensaje\n";
         }
-        else
-            std::cout << "HEMOS RECIBIDO UN MENSAJE\n";
 
         //Recibir Mensajes en y en función del tipo de mensaje
         switch (cm.getMessageType())
@@ -87,7 +85,7 @@ void GameServer::do_messages()
             /* code */
             auto it = clients.begin();
 
-            while (it != clients.end() && (**it !=  *s))
+            while (it != clients.end() && (**it != *s))
                 ++it;
 
             if (it == clients.end())
@@ -162,14 +160,17 @@ void GameServer::checkCollisions()
     for (auto player : objectsToErase)
     {
         std::cout << "UN JUGADOR HA MUERTO\n";
+        Message cm;
+        cm.setMsgType(MessageType::PLAYERDEAD);
+        cm.setPlayerInfo((*player).second);
+        cm.setNick((*player).first);
+        std::cout << "Creado mensaje de jugador muerto\n";
         //Avisamos a todos los clientes que un jugador va a ser borrado
-        for (auto it = clients.begin(); it != clients.end(); it++)
+        for (auto i = clients.begin(); i != clients.end(); ++i)
         {
-            Message cm;
-            cm.setMsgType(MessageType::PLAYERDEAD);
-            cm.setPlayerInfo((*player).second);
-            socket.send(cm, (**it));
+            socket.send(cm, (**i));
         }
+        std::cout << "ENVIADO A TODOS LOS JUGADORES\n";
 
         players.erase((*player).first);
     }

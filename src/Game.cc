@@ -27,21 +27,21 @@ Game::Game(const char *s, const char *p, const char *n)
 
 Game::~Game()
 {
+    std::cout << "Destructora de Game\n";
     //Destruir al jugador
     delete mainPlayer;
 
     //Destruir tb la ventana de SDL
-    delete app;
+    app->destroyWindow();
 }
 
 void Game::net_thread()
 {
-    while (true)
+    while (isRunning)
     {
         //Recibir Mensajes de red
         Message em;
 
-        std::cout << "Jugador esperando mensaje\n";
         mainPlayer->getPlayerSocket()->recv(em);
 
         //Mostrar en pantalla el mensaje de la forma "nick: mensaje"
@@ -60,7 +60,6 @@ void Game::net_thread()
                 mainPlayer->setTam(p.tam);
             }
 
-            std::cout << "El juego del jugador: " << mainPlayer->getNick() << " ha recibido el siguiente PlayerINFO:" << p.tam << "\n";
             break;
         }
         case MessageType::PLAYERINFO:
@@ -79,12 +78,17 @@ void Game::net_thread()
                 socket->send(em, *socket);
                 std::cout << "HAS PERDIDO\n";
                 isRunning = false;
+
+                jugadores.erase(em.getNick());
+                std::cout << "He muerto\n";
             }
             //HA MUERTO OTRO JUGADOR
             else{
+                std::cout << "Ha muerto un jugador: " << em.getNick() << "\n";
                 //Lo quitamos de nuestra lista de jugadores a pintar
                 jugadores.erase(em.getNick());
             }
+            break;
             
         }
         case MessageType::PICKUPEAT:
@@ -93,6 +97,8 @@ void Game::net_thread()
         }
         }
     }
+
+    std::cout << "Salimos del thread de escucha\n";
 }
 
 void Game::input_thread()
@@ -102,29 +108,26 @@ void Game::input_thread()
 
     Vector2D playerPos = mainPlayer->getPlayerPos();
     Socket* socket = mainPlayer->getPlayerSocket();
-
+    bool sendMessage = false;
     //Movemos al jugador localmente
     if(HandleEvents::instance()->isKeyDown(SDL_SCANCODE_W)){
-        std::cout << "Pulsando W\n";
         mainPlayer->setPosition(Vector2D(playerPos.getX(), playerPos.getY()-2));
-        Message m(MessageType::PLAYERINFO, mainPlayer);
-        socket->send(m, *socket);
+        sendMessage = true;
     }
     if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_S)){
-        std::cout << "Pulsando S\n";
         mainPlayer->setPosition(Vector2D(playerPos.getX(), playerPos.getY()+2));
-        Message m(MessageType::PLAYERINFO, mainPlayer);
-        socket->send(m, *socket);
+        sendMessage = true;  
     }
     if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_A)){
-        std::cout << "Pulsando A\n";
         mainPlayer->setPosition(Vector2D(playerPos.getX()-2, playerPos.getY()));
-        Message m(MessageType::PLAYERINFO, mainPlayer);
-        socket->send(m, *socket);
+        sendMessage = true;
     }
     if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_D)){
-        std::cout << "Pulsando D\n";
         mainPlayer->setPosition(Vector2D(playerPos.getX()+2, playerPos.getY()));
+        sendMessage = true;
+    }
+
+    if(sendMessage && isRunning){
         Message m(MessageType::PLAYERINFO, mainPlayer);
         socket->send(m, *socket);
     }
