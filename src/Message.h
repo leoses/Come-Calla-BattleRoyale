@@ -13,9 +13,10 @@ enum class MessageType
     PICKUPEAT = 2,
     NEWPICKUP = 3,
     PICKUPDESTROY = 4,
-    LOGOUT  = 5,
-    NEWPLAYER =6,
-    UNDEFINED = 7
+    PLAYERDEAD = 5,
+    LOGOUT  = 6,
+    NEWPLAYER = 7,
+    UNDEFINED = 8
 };
 
 class Message: public Serializable{
@@ -24,7 +25,6 @@ protected:
     MessageType type;
     SDL_Rect dimensions;
     std::string nick;
-    Jugador* player;
     PlayerInfo playerInfo;
 
     //Metodos para la serializacion de nuestros mensajes

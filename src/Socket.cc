@@ -72,20 +72,14 @@ int Socket::recv(Serializable &obj, Socket * &sock)
 
 int Socket::send(Serializable& obj, const Socket& sock)
 {
-    std::cout << "Antes de serializar el objeto\n";
     //Serializar el objeto
     obj.to_bin();
-
-    std::cout << "Despues de serializar el objeto\n";
 
     //Enviar el objeto binario a sock usando el socket sd
     ssize_t bytes = sendto(sock.sd,obj.data(),obj.size(),0,&sock.sa, sock.sa_len);
 
-    std::cout << "PASAMOS DEL SEND TO. NUm bytes: "<< bytes<<"\n";
-
     if ( bytes <= 0 )
     {
-        std::cerr << "ERROR AL ENVIAR MENSAJE\n";
         return -1;
     }
 

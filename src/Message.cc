@@ -5,9 +5,12 @@
 Message::Message() : type(MessageType::UNDEFINED)
 {
 }
-Message::Message(MessageType type_, Jugador *player_) : type(type_), player(player_)
+Message::Message(MessageType type_, Jugador *player_) : type(type_)
 {
-    nick = player->getNick();
+    nick = player_->getNick();
+    playerInfo = PlayerInfo();
+    playerInfo.tam = player_->getPlayerTam();
+    playerInfo.pos = player_->getPlayerPos();
 }
 
 Message::~Message()
@@ -146,7 +149,6 @@ void Message::serializeTypeNick()
 
 void Message::serializePlayerInfo()
 {
-    std::cout << "Serialize player info\n";
     messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
 
     //reservamos la memoria
@@ -169,11 +171,7 @@ void Message::serializePlayerInfo()
 
     temp += sizeof(char) * 12;
 
-
-
-    std::cout << "Antes de serializar PLAYERINFO\n";
     memcpy(temp, &playerInfo, sizeof(PlayerInfo));
-    std::cout << "Despues de serializar PLAYERINFO\n";
 }
 
 void Message::constructTypeNick(char *bobj)
@@ -202,8 +200,5 @@ void Message::constructPlayerInfo(char *bobj)
     nick = temp;
 
     temp += sizeof(char) * 12;
-    std::cout << "Antes de construir PLayerInfo\n";
     memcpy(&playerInfo, temp, sizeof(PlayerInfo));
-    std::cout << "Después de construir PLayerInfo\n";
-
 }

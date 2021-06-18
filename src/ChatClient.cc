@@ -12,16 +12,9 @@ int main(int argc, char **argv)
     std::thread net_thread([&game]() { game.net_thread(); });
     //Mandamos mensaje de login y creamos la ventana de SDL
     game.initGame();
-    //thread para escuchar al input
-    //game.input_thread();
 
     //Para que se quede aquí hasta que queramos
-    while(true){
-        game.render();
-    }
-
-    //ec.input_thread();
-
+    game.run();
 
 }
 

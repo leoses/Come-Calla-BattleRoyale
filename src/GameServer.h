@@ -15,6 +15,7 @@ public:
      *  lo distribuye a los clientes. Mantiene actualizada la lista de clientes
      */
     void do_messages();
+    void checkCollisions();
 
 private:
     /**

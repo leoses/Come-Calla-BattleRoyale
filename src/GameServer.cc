@@ -3,6 +3,8 @@
 #include <memory>
 #include <ctime>
 #include <cstdlib>
+#include <SDL2/SDL.h>
+#include <list>
 
 GameServer::GameServer(const char *s, const char *p) : socket(s, p)
 {
@@ -46,7 +48,7 @@ void GameServer::do_messages()
 
             //Informacion del jugador
             PlayerInfo n;
-            n.tam = 25;
+            n.tam = rand() % 50;
             n.pos = Vector2D(rand() % (800), rand() % (600));
 
             //Asignamos
@@ -83,24 +85,35 @@ void GameServer::do_messages()
         {
             /*
             /* code */
-            //auto it = clients.begin();
+            auto it = clients.begin();
 
-            //while (it != clients.end() && (**it !=  *s))
-            //    ++it;
+            while (it != clients.end() && (**it !=  *s))
+                ++it;
 
-            //if (it == clients.end())
-            //    std::cout << "El jugador ya se había desconectado previamente\n";
-            //else
-            //{
-            //    std::cout << "Jugador desconectado: " << cm.nick << "\n";
-            //    clients.erase(it);                 //Lo sacamos del vector
-            //    Socket *delSock = (*it).release(); //Eliminamos la pertenencia del socket de dicho unique_ptr
-            //    delete delSock;                    //Borramos el socket
-            //}
+            if (it == clients.end())
+                std::cout << "El jugador ya se había desconectado previamente\n";
+            else
+            {
+                std::cout << "Jugador desconectado: " << cm.getNick() << "\n";
+                clients.erase(it);                 //Lo sacamos del vector
+                Socket *delSock = (*it).release(); //Eliminamos la pertenencia del socket de dicho unique_ptr
+                delete delSock;                    //Borramos el socket
+            }
             break;
         }
         case MessageType::PLAYERINFO:
         {
+            //Actualizamos la posición en la que se encuentra dicho jugador en la memoria del servidor
+            players[cm.getNick()] = cm.getPlayerInfo();
+
+            //Avisar a todos los jugadores conectados que alguien se ha movido
+            for (auto it = clients.begin(); it != clients.end(); it++)
+            {
+                if ((**it) != *s) //Excepto a la persona que ha enviado el mensaje
+                {
+                    socket.send(cm, (**it));
+                }
+            }
 
             break;
         }
@@ -113,5 +126,51 @@ void GameServer::do_messages()
             std::cerr << "UNKOWNK MESSAGE RECIEVED\n";
             break;
         }
+    }
+}
+
+void GameServer::checkCollisions()
+{
+
+    std::list<std::map<std::string, PlayerInfo>::iterator> objectsToErase;
+
+    for (auto it = players.begin(); it != players.end(); ++it)
+    {
+        for (auto it2 = it; it2 != players.end(); ++it2)
+        {
+            SDL_Rect a, b;
+            PlayerInfo ap = (*it).second, bp = (*it2).second;
+            a = {(int)ap.pos.getX(), (int)ap.pos.getY(), ap.tam, ap.tam};
+            b = {(int)bp.pos.getX(), (int)bp.pos.getY(), bp.tam, bp.tam};
+
+            //Si se solapan y el tamaño entre los dos es distinto
+            //significa que uno muere
+            if (SDL_HasIntersection(&a, &b) && bp.tam != ap.tam)
+            {
+                if (ap.tam > bp.tam)
+                {
+                    objectsToErase.push_back(it2);
+                }
+                else
+                {
+                    objectsToErase.push_back(it);
+                }
+            }
+        }
+    }
+
+    for (auto player : objectsToErase)
+    {
+        std::cout << "UN JUGADOR HA MUERTO\n";
+        //Avisamos a todos los clientes que un jugador va a ser borrado
+        for (auto it = clients.begin(); it != clients.end(); it++)
+        {
+            Message cm;
+            cm.setMsgType(MessageType::PLAYERDEAD);
+            cm.setPlayerInfo((*player).second);
+            socket.send(cm, (**it));
+        }
+
+        players.erase((*player).first);
     }
 }
