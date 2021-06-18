@@ -1,7 +1,7 @@
-DEPS = Vector2D.h  PlayerInfo.h Resources.h InputManager.h SDLTexture.h TextureManager.h Socket.h Message.h GameServer.h SDLApp.h Jugador.h Game.h GameObject.h ChatClient.h ChatServer.h
+DEPS = Vector2D.h  PlayerInfo.h Resources.h InputManager.h SDLTexture.h TextureManager.h Socket.h Message.h GameServer.h SDLApp.h Jugador.h Game.h  ChatClient.h ChatServer.h
 
 SERVER = Vector2D.o  Resources.o Socket.o Jugador.o Message.o GameServer.o
-CLIENT = Vector2D.o  Resources.o InputManager.o SDLTexture.o TextureManager.o Socket.o Jugador.o Message.o SDLApp.o  Game.o GameObject.o
+CLIENT = Vector2D.o  Resources.o InputManager.o SDLTexture.o TextureManager.o Socket.o Jugador.o Message.o SDLApp.o  Game.o 
 #LINKER_FLAGS specifies the libraries we're linking against
 LIBS =  -lpthread 
 LIBSSDL=-lSDL2 -lSDL2_image -lSDL2_ttf

@@ -8,6 +8,7 @@ Jugador::Jugador(const char *s, const char *p, const char *n) : socket(s, p), ni
 
 Jugador::~Jugador()
 {
+    
 }
 
 void Jugador::update()

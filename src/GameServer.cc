@@ -81,6 +81,7 @@ void GameServer::do_messages()
         }
         case MessageType::LOGOUT:
         {
+            std::cout << "recivido logout\n";
             /*
             /* code */
             auto it = clients.begin();
@@ -162,7 +163,7 @@ void GameServer::checkCollisions()
         std::cout << "UN JUGADOR HA MUERTO\n";
         Message cm;
         cm.setMsgType(MessageType::PLAYERDEAD);
-        cm.setPlayerInfo((*player).second);
+        cm.setObjectInfo((*player).second);
         cm.setNick((*player).first);
         std::cout << "Creado mensaje de jugador muerto\n";
         //Avisamos a todos los clientes que un jugador va a ser borrado
@@ -173,5 +174,33 @@ void GameServer::checkCollisions()
         std::cout << "ENVIADO A TODOS LOS JUGADORES\n";
 
         players.erase((*player).first);
+    }
+}
+
+void GameServer::createObjects(){
+    if(SDL_GetTicks() - initTime > TimeTocreate ){
+        //creo el objeto
+        ObjectInfo obj;
+        obj.tam = 15 + rand() % 35; 
+        obj.pos = Vector2D(rand() % (800), rand() % (600));
+        std::string num = std::to_string(numObjects);
+        num.resize(12);
+        objects[num]= obj;
+        numObjects++;
+        //mandar mensaje de objeto nuevo
+         Message cm;
+        cm.setMsgType(MessageType::NEWPICKUP);
+        cm.setObjectInfo((obj));
+        cm.setNick((num));
+        std::cout << "Creado mensaje de jugador muerto\n";
+        //Avisamos a todos los clientes que un objeto ha sido creado
+        for (auto i = clients.begin(); i != clients.end(); ++i)
+        {
+            socket.send(cm, (**i));
+        }
+        std::cout << "ENVIADO A TODOS LOS JUGADORES\n";
+
+
+        initTime = SDL_GetTicks();
     }
 }

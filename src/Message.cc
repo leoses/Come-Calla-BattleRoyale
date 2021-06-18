@@ -8,9 +8,9 @@ Message::Message() : type(MessageType::UNDEFINED)
 Message::Message(MessageType type_, Jugador *player_) : type(type_)
 {
     nick = player_->getNick();
-    playerInfo = PlayerInfo();
-    playerInfo.tam = player_->getPlayerTam();
-    playerInfo.pos = player_->getPlayerPos();
+    ObjectInfo = ObjectInfo();
+    ObjectInfo.tam = player_->getPlayerTam();
+    ObjectInfo.pos = player_->getPlayerPos();
 }
 
 Message::~Message()
@@ -45,13 +45,18 @@ void Message::to_bin()
 
     case MessageType::PLAYERINFO:
     {
-        serializePlayerInfo();
+        serializeObjectInfo();
+        break;
+    }
+      case MessageType::NEWPICKUP:
+    {
+        serializeObjectInfo();
         break;
     }
 
     case MessageType::NEWPLAYER:
     {
-        serializePlayerInfo();
+        serializeObjectInfo();
         break;
     }
 
@@ -60,6 +65,7 @@ void Message::to_bin()
         serializeTypeNick();
         break;
     }
+    
     }
 }
 
@@ -94,22 +100,29 @@ int Message::from_bin(char *bobj)
         break;
     }
 
-    case MessageType::PLAYERINFO:
+    case MessageType::ObjectInfo:
     {
-        constructPlayerInfo(bobj);
+        constructObjectInfo(bobj);
         break;
     }
 
     case MessageType::NEWPLAYER:
     {
         std::cout << "NEWPLAYER\n";
-        constructPlayerInfo(bobj);
+        constructObjectInfo(bobj);
         break;
     }
     case MessageType::PLAYERDEAD:
     {
         std::cout << "PLAYERDEAD\n";
         constructTypeNick(bobj);
+        break;
+    }
+
+     case MessageType::NEWPICKUP:
+    {
+        std::cout << "NEWPICKUP\n";
+        constructObjectInfo(bobj);
         break;
     }
 
@@ -159,9 +172,9 @@ void Message::serializeTypeNick()
     memcpy(temp, nick.c_str(), sizeof(char) * 12);
 }
 
-void Message::serializePlayerInfo()
+void Message::serializeObjectInfo()
 {
-    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
+    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(ObjectInfo);
 
     //reservamos la memoria
     alloc_data(messageSize);
@@ -183,7 +196,7 @@ void Message::serializePlayerInfo()
 
     temp += sizeof(char) * 12;
 
-    memcpy(temp, &playerInfo, sizeof(PlayerInfo));
+    memcpy(temp, &playerInfo, sizeof(ObjectInfo));
 }
 
 void Message::constructTypeNick(char *bobj)
@@ -199,9 +212,9 @@ void Message::constructTypeNick(char *bobj)
     nick = temp;
 }
 
-void Message::constructPlayerInfo(char *bobj)
+void Message::constructObjectInfo(char *bobj)
 {
-    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(PlayerInfo);
+    messageSize = sizeof(MessageType) + sizeof(char) * 12 + sizeof(ObjectInfo);
     //reservamos la memoria
     alloc_data(messageSize);
     memcpy(static_cast<void *>(_data), bobj, messageSize);
@@ -212,5 +225,5 @@ void Message::constructPlayerInfo(char *bobj)
     nick = temp;
 
     temp += sizeof(char) * 12;
-    memcpy(&playerInfo, temp, sizeof(PlayerInfo));
+    memcpy(&playerInfo, temp, sizeof(ObjectInfo));
 }

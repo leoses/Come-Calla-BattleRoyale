@@ -32,7 +32,8 @@ Game::~Game()
     delete mainPlayer;
 
     //Destruir tb la ventana de SDL
-    app->destroyWindow();
+    //app->destroyWindow();
+    delete app;
 }
 
 void Game::net_thread()
@@ -51,7 +52,7 @@ void Game::net_thread()
         {
         case MessageType::NEWPLAYER:
         {
-            PlayerInfo p = em.getPlayerInfo();
+            ObjectInfo p = em.getObjectInfo();
             if (em.getNick() != mainPlayer->getNick())
                 jugadores[em.getNick()] = p;
             else
@@ -64,7 +65,7 @@ void Game::net_thread()
         }
         case MessageType::PLAYERINFO:
         {
-            PlayerInfo p = em.getPlayerInfo();
+            ObjectInfo p = em.getObjectInfo();
             jugadores[em.getNick()] = p;
             break;
         }
@@ -79,7 +80,7 @@ void Game::net_thread()
                 std::cout << "HAS PERDIDO\n";
                 isRunning = false;
 
-                jugadores.erase(em.getNick());
+               // jugadores.erase(em.getNick());
                 std::cout << "He muerto\n";
             }
             //HA MUERTO OTRO JUGADOR
@@ -95,14 +96,22 @@ void Game::net_thread()
         {
             break;
         }
+         case MessageType::NEWPICKUP:
+        {
+            ObjectInfo p = em.getObjectInfo();
+            objetos[em.getNick()] = p;
+            break;
+        }
         }
     }
 
     std::cout << "Salimos del thread de escucha\n";
+    return;
 }
 
 void Game::input_thread()
 {
+      std::cout << "entrada input_thread\n";
     //Updateamos la instancia del input
     HandleEvents::instance()->update();
 
@@ -131,10 +140,12 @@ void Game::input_thread()
         Message m(MessageType::PLAYERINFO, mainPlayer);
         socket->send(m, *socket);
     }
+        std::cout << "salida input_thread\n";
 }
 
 void Game::render() const
 {
+     std::cout << "entrada render\n";
     //Limpiamos el renderer
     SDL_RenderClear(app->getRenderer());
     
@@ -157,6 +168,7 @@ void Game::render() const
 
     //Volcamos sobre la ventana
     SDL_RenderPresent(app->getRenderer());
+    std::cout << "salida render\n";
 }
 
 void Game::run(){

@@ -1,7 +1,7 @@
 #include "Socket.h"
 #include <vector>
 #include <map>
-#include "PlayerInfo.h"
+#include "ObjectInfo.h"
 #include <memory>
 #include <mutex>
 
@@ -17,6 +17,7 @@ public:
      */
     void do_messages();
     void checkCollisions();
+    void createObjects();
 
 private:
     /**
@@ -24,7 +25,11 @@ private:
      *  su socket
      */
     std::vector<std::unique_ptr<Socket>> clients;
-    std::map<std::string,PlayerInfo > players;
+    std::map<std::string,ObjectInfo > players;
+    std::map<std::string,ObjectInfo> objects;
+    const float TimeTocreate = 2000;
+    float initTime = 0;
+    int numObjects = 0;
 
     /**
      * Socket del servidor

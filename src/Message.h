@@ -2,7 +2,7 @@
 #include "Serializable.h"
 #include  <string>
 #include <SDL2/SDL.h>
-#include "PlayerInfo.h"
+#include "ObjectInfo.h"
 class Jugador;
 
 
@@ -25,15 +25,16 @@ protected:
     MessageType type;
     SDL_Rect dimensions;
     std::string nick;
-    PlayerInfo playerInfo;
+    ObjectInfo objectInfo;
+   
 
     //Metodos para la serializacion de nuestros mensajes
     void serializeTypeNick();
-    void serializePlayerInfo();
+    void serializeObjectInfo();
 
     //Metodos para la construccion de los mensajes recibidos
     void constructTypeNick(char *bobj);
-    void constructPlayerInfo(char *bobj);
+    void constructObjectInfo(char *bobj);
 
 public:
     
@@ -48,12 +49,12 @@ public:
     size_t getMessageSize();
     MessageType getMessageType();
     std::string getNick();
-    PlayerInfo getPlayerInfo()const{
-        return playerInfo;
+    ObjectInfo getObjectInfo()const{
+        return objectInfo;
     }
     
     void setNick(std::string newNick);
-    void setPlayerInfo(const PlayerInfo& info){
+    void setPlayerInfo(const ObjectInfo& info){
         playerInfo = info;
     }
     void setMsgType(MessageType type);

@@ -9,12 +9,17 @@ int main(int argc, char **argv)
     std::cout << "Iniciamos el thread de escucha del juego\n";
     //Iniciamos el thread que se encargará de recibir mensajes del
     //servidor
-    std::thread net_thread([&game]() { game.net_thread(); });
+    std::thread([&game]() { game.net_thread(); }).detach();
+    
     //Mandamos mensaje de login y creamos la ventana de SDL
     game.initGame();
 
     //Para que se quede aquí hasta que queramos
     game.run();
+
+    std::cout << "fin de main\n";
+    return 0;
+
 
 }
 
