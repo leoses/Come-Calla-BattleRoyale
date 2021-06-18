@@ -1,6 +1,6 @@
 #include "Jugador.h"
 #include "SDLApp.h"
-#include "PlayerInfo.h"
+#include "ObjectInfo.h"
 #include <map>
 
 class Game
@@ -9,7 +9,9 @@ private:
     //Jugador controlado por este juego
     Jugador *mainPlayer = nullptr;
     //Lista con la informacion de los otros jugadores
-    std::map<std::string, PlayerInfo> jugadores;
+    std::map<std::string, ObjectInfo> jugadores;
+    //Lista de informacion de los objetos
+    std::map<std::string, ObjectInfo> objetos;
     //Referencia a la App de SDL para gestionar el pintado, la ventana etc
     SDLApp *app = nullptr;
     //Textura de fondo

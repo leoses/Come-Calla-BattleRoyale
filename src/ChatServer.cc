@@ -11,6 +11,7 @@ int main(int argc, char **argv)
     while (true)
     {
         es.checkCollisions();
+        es.createObjects();
     }
     return 0;
 }

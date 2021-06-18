@@ -8,9 +8,9 @@ Message::Message() : type(MessageType::UNDEFINED)
 Message::Message(MessageType type_, Jugador *player_) : type(type_)
 {
     nick = player_->getNick();
-    ObjectInfo = ObjectInfo();
-    ObjectInfo.tam = player_->getPlayerTam();
-    ObjectInfo.pos = player_->getPlayerPos();
+    objectInfo = ObjectInfo();
+    objectInfo.tam = player_->getPlayerTam();
+    objectInfo.pos = player_->getPlayerPos();
 }
 
 Message::~Message()
@@ -100,7 +100,7 @@ int Message::from_bin(char *bobj)
         break;
     }
 
-    case MessageType::ObjectInfo:
+    case MessageType::PLAYERINFO:
     {
         constructObjectInfo(bobj);
         break;
@@ -196,7 +196,7 @@ void Message::serializeObjectInfo()
 
     temp += sizeof(char) * 12;
 
-    memcpy(temp, &playerInfo, sizeof(ObjectInfo));
+    memcpy(temp, &objectInfo, sizeof(ObjectInfo));
 }
 
 void Message::constructTypeNick(char *bobj)
@@ -225,5 +225,5 @@ void Message::constructObjectInfo(char *bobj)
     nick = temp;
 
     temp += sizeof(char) * 12;
-    memcpy(&playerInfo, temp, sizeof(ObjectInfo));
+    memcpy(&objectInfo, temp, sizeof(ObjectInfo));
 }

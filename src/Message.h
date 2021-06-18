@@ -54,8 +54,8 @@ public:
     }
     
     void setNick(std::string newNick);
-    void setPlayerInfo(const ObjectInfo& info){
-        playerInfo = info;
+    void setObjectInfo(const ObjectInfo& info){
+        objectInfo= info;
     }
     void setMsgType(MessageType type);
 

@@ -10,6 +10,7 @@ GameServer::GameServer(const char *s, const char *p) : socket(s, p)
 {
     //Inicializamos seed para numeros aleatorios
     srand(std::time(0));
+    initTime = SDL_GetTicks();
 }
 
 void GameServer::do_messages()
@@ -45,7 +46,7 @@ void GameServer::do_messages()
             clients.push_back(std::move(std::make_unique<Socket>(*s)));
 
             //Informacion del jugador
-            PlayerInfo n;
+            ObjectInfo n;
             n.tam = rand() % 50;
             n.pos = Vector2D(rand() % (800), rand() % (600));
 
@@ -58,7 +59,7 @@ void GameServer::do_messages()
             Message newPlayerConnected = Message();
             newPlayerConnected.setMsgType(MessageType::NEWPLAYER);
             newPlayerConnected.setNick(cm.getNick());
-            newPlayerConnected.setPlayerInfo(players[cm.getNick()]);
+            newPlayerConnected.setObjectInfo(players[cm.getNick()]);
 
             //Avisar a todos los jugadores conectados que ha entrado uno nuevo
             for (auto it = clients.begin(); it != clients.end(); it++)
@@ -73,10 +74,19 @@ void GameServer::do_messages()
                 if ((*it).first != cm.getNick())
                 {
                     newPlayerConnected.setNick((*it).first);
-                    newPlayerConnected.setPlayerInfo((*it).second);
+                    newPlayerConnected.setObjectInfo((*it).second);
                     socket.send(newPlayerConnected, *s);
                 }
             }
+
+            for (auto it = objects.begin(); it != objects.end(); ++it)
+            {
+                newPlayerConnected.setMsgType(MessageType::NEWPICKUP);
+                newPlayerConnected.setNick((*it).first);
+                newPlayerConnected.setObjectInfo((*it).second);
+                socket.send(newPlayerConnected, *s);
+            }
+
             break;
         }
         case MessageType::LOGOUT:
@@ -103,7 +113,7 @@ void GameServer::do_messages()
         case MessageType::PLAYERINFO:
         {
             //Actualizamos la posición en la que se encuentra dicho jugador en la memoria del servidor
-            players[cm.getNick()] = cm.getPlayerInfo();
+            players[cm.getNick()] = cm.getObjectInfo();
 
             //Avisar a todos los jugadores conectados que alguien se ha movido
             for (auto it = clients.begin(); it != clients.end(); it++)
@@ -131,14 +141,14 @@ void GameServer::do_messages()
 void GameServer::checkCollisions()
 {
 
-    std::list<std::map<std::string, PlayerInfo>::iterator> objectsToErase;
+    std::list<std::map<std::string, ObjectInfo>::iterator> objectsToErase;
 
     for (auto it = players.begin(); it != players.end(); ++it)
     {
         for (auto it2 = it; it2 != players.end(); ++it2)
         {
             SDL_Rect a, b;
-            PlayerInfo ap = (*it).second, bp = (*it2).second;
+            ObjectInfo ap = (*it).second, bp = (*it2).second;
             a = {(int)ap.pos.getX(), (int)ap.pos.getY(), ap.tam, ap.tam};
             b = {(int)bp.pos.getX(), (int)bp.pos.getY(), bp.tam, bp.tam};
 
@@ -177,29 +187,34 @@ void GameServer::checkCollisions()
     }
 }
 
-void GameServer::createObjects(){
-    if(SDL_GetTicks() - initTime > TimeTocreate ){
-        //creo el objeto
-        ObjectInfo obj;
-        obj.tam = 15 + rand() % 35; 
-        obj.pos = Vector2D(rand() % (800), rand() % (600));
-        std::string num = std::to_string(numObjects);
-        num.resize(12);
-        objects[num]= obj;
-        numObjects++;
-        //mandar mensaje de objeto nuevo
-         Message cm;
-        cm.setMsgType(MessageType::NEWPICKUP);
-        cm.setObjectInfo((obj));
-        cm.setNick((num));
-        std::cout << "Creado mensaje de jugador muerto\n";
-        //Avisamos a todos los clientes que un objeto ha sido creado
-        for (auto i = clients.begin(); i != clients.end(); ++i)
+void GameServer::createObjects()
+{
+    if (SDL_GetTicks() - initTime > TimeTocreate)
+    {
+        if (numObjects < MAXOBJECTS)
         {
-            socket.send(cm, (**i));
-        }
-        std::cout << "ENVIADO A TODOS LOS JUGADORES\n";
 
+            //creo el objeto
+            ObjectInfo obj;
+            obj.tam = 5 + rand() % 25;
+            obj.pos = Vector2D(rand() % (800), rand() % (600));
+            std::string num = std::to_string(numObjects);
+            num.resize(12);
+            objects[num] = obj;
+            numObjects++;
+            //mandar mensaje de objeto nuevo
+            Message cm;
+            cm.setMsgType(MessageType::NEWPICKUP);
+            cm.setObjectInfo((obj));
+            cm.setNick((num));
+            std::cout << "Creado objeto\n";
+            //Avisamos a todos los clientes que un objeto ha sido creado
+            for (auto i = clients.begin(); i != clients.end(); ++i)
+            {
+                socket.send(cm, (**i));
+            }
+            std::cout << "ENVIADO OBJETO A TODOS LOS JUGADORES\n";
+        }
 
         initTime = SDL_GetTicks();
     }

@@ -162,7 +162,15 @@ void Game::render() const
     SDLTexture *t = app->getTextureManager()->getTexture(Resources::TextureId::Jugador2);
     for (auto it = jugadores.begin(); it != jugadores.end(); ++it)
     {
-        PlayerInfo p = (*it).second;
+        ObjectInfo p = (*it).second;
+        t->render({(int)p.pos.getX(), (int)p.pos.getY(), p.tam, p.tam});
+    }
+
+     //Pintamos a los objetos
+    t = app->getTextureManager()->getTexture(Resources::TextureId::Objeto);
+    for (auto it = objetos.begin(); it != objetos.end(); ++it)
+    {
+        ObjectInfo p = (*it).second;
         t->render({(int)p.pos.getX(), (int)p.pos.getY(), p.tam, p.tam});
     }
 

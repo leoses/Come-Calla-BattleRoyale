@@ -7,6 +7,7 @@ vector<Resources::ImageInfo> Resources::imageRoutes {
 	{ Escenario, "./Assets/Escenario.png" },
 	{ Jugador1, "./Assets/Jugador01.png" },
 	{ Jugador2, "./Assets/Jugador02.png" },
+	{ Objeto, "./Assets/Object.png" },
 	
 };
 /*

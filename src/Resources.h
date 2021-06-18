@@ -13,7 +13,8 @@ public:
 	enum TextureId : int {
 		Escenario,
 		Jugador1,
-		Jugador2
+		Jugador2,
+		Objeto,
 	};
 
 	enum MusicChannels : int {
