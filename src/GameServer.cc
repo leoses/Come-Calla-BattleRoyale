@@ -16,20 +16,16 @@ GameServer::GameServer(const char *s, const char *p) : socket(s, p)
 void GameServer::do_messages()
 {
 
-    std::cout << "Bind del gameServer\n";
     if (socket.bind() == -1)
     {
         std::cout << "Bindeo Incorrecto\n";
     }
-    else
-        std::cout << "Bindeo Correcto\n";
 
     while (true)
     {
         Message cm;
         Socket *s = nullptr;
 
-        std::cout << "Esperando a recibir mensaje\n";
         //Esperamos recibir un mensaje de cualquier socket
         if (socket.recv(cm, s) == -1)
         {
@@ -47,8 +43,8 @@ void GameServer::do_messages()
 
             //Informacion del jugador
             ObjectInfo n;
-            n.tam = rand() % 50;
-            n.pos = Vector2D(rand() % (800), rand() % (600));
+            n.tam = 25;
+            n.pos = Vector2D(rand() % (800 - n.tam), rand() % (600 - n.tam));
 
             //Asignamos
             players[cm.getNick()] = n;
@@ -135,6 +131,13 @@ void GameServer::do_messages()
         default:
             std::cerr << "UNKOWNK MESSAGE RECIEVED\n";
             break;
+        }
+
+        //En el metodo recieve si recibimos como parametro un puntero hacemos un new con el socket creado
+        //A excecpción del que recibamos un mensaje de login, siempre querremos borrar ese objeto
+        //puesto que ya lo almacenamos en el diccionario clients y no borrarlo dejaria basura
+        if(cm.getMessageType() != MessageType::LOGIN){
+            delete s;
         }
 
     }
@@ -242,14 +245,14 @@ void GameServer::createObjects()
 
             //creo el objeto
             ObjectInfo obj;
-            obj.tam = 5 + rand() % 25;
-            obj.pos = Vector2D(rand() % (800), rand() % (600));
+            obj.tam = 5 + rand() % 35;
+            obj.pos = Vector2D(rand() % (800 - obj.tam), rand() % (600 - obj.tam));
             std::string num = std::to_string(numObjects);
             num.resize(12);
             objects[num] = obj;
 
-            std::cout << "NUmero de objetos: " << objects.size();
             numObjects++;
+            
             //mandar mensaje de objeto nuevo
             Message cm;
             cm.setMsgType(MessageType::NEWPICKUP);

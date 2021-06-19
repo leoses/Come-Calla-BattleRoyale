@@ -71,16 +71,35 @@ int Socket::recv(Serializable &obj, Socket * &sock)
     return 0;
 }
 
+int Socket::recv(Serializable &obj)
+{
+    struct sockaddr sa;
+    socklen_t sa_len = sizeof(struct sockaddr);
+
+    char buffer[MAX_MESSAGE_SIZE];
+
+    ssize_t bytes = recvfrom(sd, buffer, MAX_MESSAGE_SIZE, 0, &sa, &sa_len);
+
+    if ( bytes <= 0 )
+    {
+        return -1;
+    }
+
+    obj.from_bin(buffer);
+
+    return 0;
+}
+
 int Socket::send(Serializable& obj, const Socket& sock)
 {
-    std::cout << "ANtes de serializar\n";
+
     //Serializar el objeto
     obj.to_bin();
-    std::cout << "Despues de serializar\n";
+
 
     //Enviar el objeto binario a sock usando el socket sd
     ssize_t bytes = sendto(sock.sd,obj.data(),obj.size(),0,&sock.sa, sock.sa_len);
-    std::cout << "ENVIADO\n";
+
 
     if ( bytes <= 0 )
     {
@@ -89,6 +108,7 @@ int Socket::send(Serializable& obj, const Socket& sock)
 
     return 0;
 }
+
 
 bool operator== (const Socket &s1, const Socket &s2)
 {

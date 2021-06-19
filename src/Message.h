@@ -40,7 +40,7 @@ public:
     
     Message();
     Message(MessageType type_ ,Jugador* player_);
-    //Message(MessageType type_ PickUp obj);
+    
     virtual ~Message();
 
     virtual void to_bin();

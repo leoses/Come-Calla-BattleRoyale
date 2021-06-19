@@ -1,6 +1,7 @@
 #include "Message.h"
 #include <memory.h>
 #include "Jugador.h"
+#include <iostream>
 
 Message::Message() : type(MessageType::UNDEFINED)
 {

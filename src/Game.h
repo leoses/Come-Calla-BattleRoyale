@@ -2,6 +2,7 @@
 #include "SDLApp.h"
 #include "ObjectInfo.h"
 #include <map>
+#include "Socket.h"
 
 class Game
 {
@@ -16,6 +17,8 @@ private:
     SDLApp *app = nullptr;
     //Textura de fondo
     SDLTexture *background = nullptr;
+    //SOcket para comunicarnos con el servidor
+    Socket socket;
 
     //booleano para determinar si hemos perdido o no
     bool isRunning = true;
