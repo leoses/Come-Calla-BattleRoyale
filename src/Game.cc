@@ -2,6 +2,7 @@
 #include "Message.h"
 #include "Resources.h"
 #include "InputManager.h"
+#include "Constants.h"
 
 void Game::initGame()
 {
@@ -96,7 +97,7 @@ void Game::net_thread()
         case MessageType::PICKUPEAT:
         {
             ObjectInfo p = em.getObjectInfo();
-            mainPlayer->setTam(mainPlayer->getPlayerTam() + p.tam/5);
+            mainPlayer->setTam(mainPlayer->getPlayerTam() + (p.tam/MIN_SIZE_PICKUP));
             //mandamos un mensaje para actualizar la informacion
             Message cm(MessageType::PLAYERINFO, mainPlayer);
             socket.send(cm, socket);
@@ -120,7 +121,6 @@ void Game::net_thread()
         }
     }
 
-    return;
 }
 
 void Game::input_thread()
@@ -132,24 +132,24 @@ void Game::input_thread()
     Vector2D playerPos = mainPlayer->getPlayerPos();
     bool sendMessage = false;
     //Movemos al jugador localmente
-    if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_W) && playerPos.getY() - 2 >= 0)
+    if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_W) && playerPos.getY() - PLAYER_SPEEED >= 0)
     {
-        mainPlayer->setPosition(Vector2D(playerPos.getX(), playerPos.getY() - 2));
+        mainPlayer->setPosition(Vector2D(playerPos.getX(), playerPos.getY() - PLAYER_SPEEED));
         sendMessage = true;
     }
-    if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_S) && playerPos.getY() + mainPlayer->getPlayerTam() <= 600)
+    if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_S) && playerPos.getY() + mainPlayer->getPlayerTam() + PLAYER_SPEEED<= WINDOW_HEIGHT)
     {
-        mainPlayer->setPosition(Vector2D(playerPos.getX(), playerPos.getY() + 2));
+        mainPlayer->setPosition(Vector2D(playerPos.getX(), playerPos.getY() + PLAYER_SPEEED));
         sendMessage = true;
     }
-    if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_A) && playerPos.getX() - 2 >= 0)
+    if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_A) && playerPos.getX() - PLAYER_SPEEED >= 0)
     {
-        mainPlayer->setPosition(Vector2D(playerPos.getX() - 2, playerPos.getY()));
+        mainPlayer->setPosition(Vector2D(playerPos.getX() - PLAYER_SPEEED, playerPos.getY()));
         sendMessage = true;
     }
-    if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_D) && playerPos.getX() + mainPlayer->getPlayerTam() <= 800)
+    if (HandleEvents::instance()->isKeyDown(SDL_SCANCODE_D) && playerPos.getX() + mainPlayer->getPlayerTam() + PLAYER_SPEEED <= WINDOW_WIDTH)
     {
-        mainPlayer->setPosition(Vector2D(playerPos.getX() + 2, playerPos.getY()));
+        mainPlayer->setPosition(Vector2D(playerPos.getX() + PLAYER_SPEEED, playerPos.getY()));
         sendMessage = true;
     }
 

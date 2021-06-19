@@ -2,35 +2,40 @@
 #include "Message.h"
 #include "SDLTexture.h"
 
-Jugador::Jugador( const char *n) : nick(n)
+Jugador::Jugador(const char *n) : nick(n)
 {
 }
 
 Jugador::~Jugador()
 {
-    
 }
 
-void Jugador::setPosition(const Vector2D& newPos){
+void Jugador::setPosition(const Vector2D &newPos)
+{
     pos = newPos;
 }
 
-void Jugador::setTam(int newTam){
+void Jugador::setTam(int16_t newTam)
+{
     tam = newTam;
 }
 
-void Jugador::setTexture(SDLTexture* newTexture){
-    texture =newTexture;
+void Jugador::setTexture(SDLTexture *newTexture)
+{
+    texture = newTexture;
 }
 
-SDLTexture* Jugador::getPlayerTexture(){
+SDLTexture *Jugador::getPlayerTexture()
+{
     return texture;
 }
 
-Vector2D Jugador::getPlayerPos(){
+Vector2D Jugador::getPlayerPos()
+{
     return pos;
 }
 
-int Jugador::getPlayerTam(){
+int16_t Jugador::getPlayerTam()
+{
     return tam;
 }

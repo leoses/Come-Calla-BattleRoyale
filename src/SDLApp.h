@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL2/SDL.h>
 #include "TextureManager.h"
+#include "Constants.h"
 
 class SDLApp
 {
@@ -37,6 +38,6 @@ public:
 	void destroyWindow();
 
     ///<summary>Constantes con las dimensiones de la ventana </summary>
-	static const int winWidth_ = 800;
-	static const int winHeight_ = 600; 
+	static const int winWidth_ = WINDOW_WIDTH;
+	static const int winHeight_ = WINDOW_HEIGHT; 
 };

@@ -6,7 +6,7 @@
 class Jugador;
 
 
-enum class MessageType
+enum class MessageType: int8_t
 {
     LOGIN   = 0,
     PLAYERINFO = 1,

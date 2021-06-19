@@ -4,6 +4,6 @@
 
 struct ObjectInfo{
     Vector2D pos;
-    int tam;
+    int16_t tam;
 
 };

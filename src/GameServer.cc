@@ -5,6 +5,7 @@
 #include <cstdlib>
 #include <SDL2/SDL.h>
 #include <list>
+#include "Constants.h"
 
 GameServer::GameServer(const char *s, const char *p) : socket(s, p)
 {
@@ -37,14 +38,14 @@ void GameServer::do_messages()
         {
         case MessageType::LOGIN:
         {
-
+            
             //Lo añadimos a la lista de clientes convirtiendo el socket en un unique_ptr y usando move
             clients[cm.getNick()] = std::move(std::make_unique<Socket>(*s));
 
             //Informacion del jugador
             ObjectInfo n;
-            n.tam = 25;
-            n.pos = Vector2D(rand() % (800 - n.tam), rand() % (600 - n.tam));
+            n.tam = INITIAL_PLAYER_SIZE;
+            n.pos = Vector2D(rand() % (WINDOW_WIDTH - n.tam), rand() % (WINDOW_HEIGHT - n.tam));
 
             //Asignamos
             players[cm.getNick()] = n;
@@ -88,8 +89,6 @@ void GameServer::do_messages()
 
         case MessageType::LOGOUT:
         {
-            /*
-            /* code */
             auto it = clients.begin();
 
             while (it != clients.end() && (*((*it).second.get()) != *s))
@@ -123,13 +122,7 @@ void GameServer::do_messages()
 
             break;
         }
-
-        case MessageType::PICKUPEAT:
-        {
-            break;
-        }
         default:
-            std::cerr << "UNKOWNK MESSAGE RECIEVED\n";
             break;
         }
 
@@ -152,7 +145,7 @@ void GameServer::checkCollisions()
     //colision de players con otros players
     for (auto it = players.begin(); it != players.end(); ++it)
     {
-        for (auto it2 = it; it2 != players.end(); ++it2)
+        for (auto it2 = std::next(it); it2 != players.end(); ++it2)
         {
             SDL_Rect a, b;
             ObjectInfo ap = (*it).second, bp = (*it2).second;
@@ -204,11 +197,11 @@ void GameServer::checkCollisions()
 
     for (auto player : playersToErase)
     {
-
         Message cm;
         cm.setMsgType(MessageType::PLAYERDEAD);
         cm.setObjectInfo((*player).second);
         cm.setNick((*player).first);
+
 
         //Avisamos a todos los clientes que un jugador va a ser borrado
         for (auto i = clients.begin(); i != clients.end(); ++i)
@@ -245,10 +238,12 @@ void GameServer::createObjects()
 
             //creo el objeto
             ObjectInfo obj;
-            obj.tam = 5 + rand() % 35;
-            obj.pos = Vector2D(rand() % (800 - obj.tam), rand() % (600 - obj.tam));
+            obj.tam = MIN_SIZE_PICKUP + rand() % MAX_SIZE_PICKUP;
+            obj.pos = Vector2D(rand() % (WINDOW_WIDTH- obj.tam), rand() % (WINDOW_HEIGHT - obj.tam));
             std::string num = std::to_string(numObjects);
             num.resize(12);
+            std::cout << "Valor del num :"<< num << "\n";
+            std::cout << "Tamano del string: "<<num.size() << "\n";
             objects[num] = obj;
 
             numObjects++;

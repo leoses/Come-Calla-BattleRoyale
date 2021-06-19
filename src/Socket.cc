@@ -43,8 +43,8 @@ Socket::Socket(const char * address, const char * port):sd(-1)
 
 Socket::Socket(struct sockaddr * _sa, socklen_t _sa_len) : sd(-1), sa(*_sa),sa_len(_sa_len){
 	sd = socket(sa.sa_family,SOCK_DGRAM,0);
-    std::cout << "Constructora de Socket\n";
-	bind();
+    //Abrimos conexion
+    bind();
 };
 
 int Socket::recv(Serializable &obj, Socket * &sock)

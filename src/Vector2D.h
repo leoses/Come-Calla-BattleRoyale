@@ -11,29 +11,29 @@
 class Vector2D
 {
 private:
-	double x_, y_;
+	double_t x_, y_;
 public:
 	Vector2D() :x_(0), y_(0) {};
 	//Vector2D(const Vector2D& v) : x_(v.x_), y_(v.y_) {}
-	Vector2D(double x, double y) : x_(x), y_(y) {};
+	Vector2D(double_t x, double_t y) : x_(x), y_(y) {};
 	virtual ~Vector2D() {}
 #pragma region Getters
 	inline Vector2D getVec() const { return { x_,y_ }; };
- 	inline double getX() const { return x_; };
-	inline double getY() const { return y_; };
+ 	inline double_t getX() const { return x_; };
+	inline double_t getY() const { return y_; };
 #pragma endregion
 
 #pragma region Setters
 	void setVec(Vector2D value) { x_ = value.getX(); y_ = value.getY(); };
-	void setX(double x) { x_ = x; };
-	void setY(double y) { y_ = y; };
+	void setX(double_t x) { x_ = x; };
+	void setY(double_t y) { y_ = y; };
 #pragma endregion
 
 #pragma region Operators																			 
 	inline Vector2D operator+(const Vector2D& v) const { return Vector2D(x_ + v.x_, y_ + v.y_); } // Suma de vectores
 	inline Vector2D operator-(const Vector2D& v) const { return Vector2D(x_ - v.x_, y_ - v.y_); } // Resta de vectores
 	inline Vector2D operator*(double d) const { return Vector2D(x_ * d, y_ * d); }				  // Multiplicación vector * número
-	inline double operator *(const Vector2D& d) const { return d.x_ * x_ + d.y_ * y_; }			  // Multiplicación vector * vector
+	inline double_t operator *(const Vector2D& d) const { return d.x_ * x_ + d.y_ * y_; }			  // Multiplicación vector * vector
 	Vector2D operator/(double d) const { return Vector2D(x_ / d, y_ / d); }						  // División vector / número
 	inline bool operator==(const Vector2D& v)const { return (x_ == v.x_ && y_ == v.y_); }		  // Comparación vector y vector
 	inline bool operator!=(const Vector2D& v)const { return !(x_ == v.x_ && y_ == v.y_); }		  // Comparación vector y vector

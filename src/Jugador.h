@@ -10,7 +10,7 @@ private:
     std::string nick;
     SDLTexture* texture = nullptr;
     Vector2D pos;
-    int tam;
+    int16_t tam;
 
 public:
     /**
@@ -25,10 +25,10 @@ public:
 
     SDLTexture* getPlayerTexture();
     Vector2D getPlayerPos();
-    int getPlayerTam();
+    int16_t getPlayerTam();
 
     void setPosition(const Vector2D& newPos);
-    void setTam(int newTam);
+    void setTam(int16_t newTam);
     void setTexture(SDLTexture* newTexture);
 
 };
