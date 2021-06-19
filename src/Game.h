@@ -2,6 +2,7 @@
 #include "SDLApp.h"
 #include "ObjectInfo.h"
 #include <map>
+#include "Socket.h"
 
 class Game
 {
@@ -16,12 +17,14 @@ private:
     SDLApp *app = nullptr;
     //Textura de fondo
     SDLTexture *background = nullptr;
+    //Socket para conectar con este juego
+    Socket socket;
 
     //booleano para determinar si hemos perdido o no
     bool isRunning = true;
 
 public:
-    Game(const char *s, const char *p, const char *n);
+    Game(const char *s, const char *p);
     ~Game();
 
     void render() const;

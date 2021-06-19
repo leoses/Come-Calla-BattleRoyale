@@ -4,9 +4,8 @@
 int main(int argc, char **argv)
 {
 
-    Game game(argv[1],argv[2], argv[3]);
+    Game game(argv[1],argv[2]);
 
-    std::cout << "Iniciamos el thread de escucha del juego\n";
     //Iniciamos el thread que se encargará de recibir mensajes del
     //servidor
     std::thread([&game]() { game.net_thread(); }).detach();
@@ -17,7 +16,6 @@ int main(int argc, char **argv)
     //Para que se quede aquí hasta que queramos
     game.run();
 
-    std::cout << "fin de main\n";
     return 0;
 
 

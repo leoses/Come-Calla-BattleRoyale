@@ -30,6 +30,7 @@ private:
     const float TimeTocreate = 2000;
     float initTime = 0;
     int numObjects = 0;
+    int playersConnected = 0;
     const int MAXOBJECTS = 20;
 
     /**

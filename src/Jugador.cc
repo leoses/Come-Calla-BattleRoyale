@@ -2,41 +2,12 @@
 #include "Message.h"
 #include "SDLTexture.h"
 
-Jugador::Jugador(const char *s, const char *p, const char *n) : socket(s, p), nick(n)
+Jugador::Jugador(std::string n) :  nick(n)
 {
 }
 
 Jugador::~Jugador()
 {
-    
-}
-
-void Jugador::update()
-{
-}
-
-void Jugador::login()
-{
-    //Mandamos el mensaje de LOGIN
-    Message logMsg = Message(MessageType::LOGIN, this);
-    if (socket.send(logMsg, socket) == -1)
-    {
-        std::cout << "Error al enviar el mensaje de login\n";
-    }
-}
-
-void Jugador::logout()
-{
-}
-
-void Jugador::initPlayer()
-{
-    //conectarse al servidor mediante login
-    login();
-}
-
-Socket* Jugador::getPlayerSocket(){
-    return &socket;
     
 }
 
@@ -62,4 +33,16 @@ Vector2D Jugador::getPlayerPos(){
 
 int Jugador::getPlayerTam(){
     return tam;
+}
+
+bool Jugador::isInGame(){
+    return inGame;
+}
+
+void Jugador::setInGame(){
+    inGame = true;
+}
+
+void Jugador::setNick(std::string newNick){
+    nick = newNick;
 }

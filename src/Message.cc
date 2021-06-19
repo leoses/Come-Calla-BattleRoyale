@@ -151,7 +151,6 @@ int Message::from_bin(char *bobj)
     }
 
     default:
-        std::cout << "Ni LOG ni LOGOUT\n";
         break;
     }
 
